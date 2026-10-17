@@ -50,7 +50,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "Reactive Failure: Quarterly HbA1c tests are 3-month trailing averages; they miss intraday volatility",
                 "Solution: Continuous Digital Twin providing real-time in-silico simulation & proactive alerts"
             ],
-            "footer": "Clinical Background • Slide 2 of 10"
+            "footer": "Clinical Background & Context"
         },
         {
             "title": "Dual Data Stream Fusion Architecture",
@@ -61,7 +61,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "Feature Synthesis: 42 kinetic & cross-domain features including velocity (dG/dt), acceleration (d²G/dt²), intraday CV% volatility, and autonomic stress coupling (HR / HRV ratio).",
                 "Compliance: 100% compliant with Indian DPDP Act 2023 & HIPAA sandbox regulations (Zero PII)."
             ],
-            "footer": "Data Architecture • Slide 3 of 10"
+            "footer": "Data Architecture & Privacy"
         },
         {
             "title": "Dual-Head Machine Learning Core & Clinical Metrics",
@@ -76,7 +76,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "   • Impending Nocturnal Hypoglycemia (<70 mg/dL): Calibrated safety decision threshold (18%)",
                 "   • Macro F1: 0.54 | Patient-stratified holdout evaluation"
             ],
-            "footer": "Model Evaluation • Slide 4 of 10"
+            "footer": "Model Evaluation & Benchmarking"
         },
         {
             "title": "Physician 'What-If' In-Silico Counterfactual Simulator",
@@ -84,12 +84,12 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
             "bullets": [
                 "Clinical Need: Physicians cannot conduct risky trial-and-error experiments on living patients.",
                 "Digital Twin Sandbox: Simulates three high-impact clinical interventions in real time (<50ms):",
-                "   1. Post-Prandial Brisk Walk (0 to 45 mins): Simulates muscular GLUT-4 glucose clearance.",
-                "   2. Indian Carb Swap / Reduction (0 to 60g): Models switching white rice to millets/proteins.",
-                "   3. Medication Adjustment (-4U to +4U): Titrates basal insulin or shifts sulfonylurea timing.",
+                "   • Post-Prandial Brisk Walk (0 to 45 mins): Simulates muscular GLUT-4 glucose clearance.",
+                "   • Indian Carb Swap / Reduction (0 to 60g): Models switching white rice to millets/proteins.",
+                "   • Medication Adjustment (-4U to +4U): Titrates basal insulin or shifts sulfonylurea timing.",
                 "Instant Feedback: Re-renders simulated counterfactual trajectory vs. baseline projection curve, calculating exact projected glucose delta (mg/dL) and RSSDI/ADA clinical guidance."
             ],
-            "footer": "Counterfactual Simulation • Slide 5 of 10"
+            "footer": "In-Silico Counterfactual Simulation"
         },
         {
             "title": "Clinician Digital Twin Cockpit UI",
@@ -102,7 +102,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "Interactive Simulator Panel: Direct slider controls for walking, carb reduction, and insulin titration.",
                 "Automated AI Presentation Tour: Built-in teleprompter HUD with optional AI voiceover."
             ],
-            "footer": "User Interface & Experience • Slide 6 of 10"
+            "footer": "User Interface & Cockpit"
         },
         {
             "title": "Clinical Walkthrough: Two Real-World Scenarios",
@@ -117,7 +117,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "   • Twin flags impending 04:30 AM hypo crash (61 mg/dL) 2 hours in advance.",
                 "   • Doctor simulates: Titrate evening basal insulin by -3U + bedtime snack -> Crash averted."
             ],
-            "footer": "Clinical Validation • Slide 7 of 10"
+            "footer": "Clinical Scenarios & Persona Validation"
         },
         {
             "title": "DPDP Act 2023 & HIPAA Compliance Architecture",
@@ -129,7 +129,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "Data Leakage Protection: Strict patient-level train/test separation prevents data memorization.",
                 "Audit Logging: Every in-silico simulation and decision recommendation is timestamped and cryptographically logged."
             ],
-            "footer": "Regulatory Compliance • Slide 8 of 10"
+            "footer": "Regulatory Compliance & Sandbox Rules"
         },
         {
             "title": "Socioeconomic Impact & Indian Healthcare Deployment Roadmap",
@@ -143,7 +143,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "   • Phase 3 (Clinical Pilot): FHIR API integration into Ayushman Bharat Digital Mission (ABDM) & e-Sanjeevani.",
                 "   • Phase 4 (Edge AI): Mobile companion app providing real-time personalized patient nudges."
             ],
-            "footer": "Deployment Roadmap • Slide 9 of 10"
+            "footer": "Impact & Deployment Roadmap"
         },
         {
             "title": "Conclusion & Competitive Summary",
@@ -156,7 +156,7 @@ def create_pptx(output_path="presentation/GLYCOTWIN_PRESENTATION.pptx"):
                 "Deliverables: Complete open-source codebase (MIT), interactive UI, architecture diagrams, and 20-min demo video.",
                 "Vision: Building the proactive foundation for Indian digital healthcare."
             ],
-            "footer": "Thank You • Happiest Health Summit 2026 Bengaluru"
+            "footer": "Happiest Health Summit 2026 • Bengaluru"
         }
     ]
 
