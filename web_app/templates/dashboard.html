@@ -105,13 +105,17 @@
 
       <!-- Compliance & Status Badges -->
       <div class="flex items-center space-x-3">
+        <button id="startAiTourBtn" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-500 hover:from-purple-500 hover:to-sky-400 font-semibold text-xs shadow-md shadow-indigo-500/25 transition flex items-center space-x-2 text-white">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+          <span>🎬 Start AI Guided Video Tour</span>
+        </button>
         <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs text-slate-300">
           <i class="fa-solid fa-shield-halved text-emerald-400"></i>
-          <span>DPDP Act 2023 & HIPAA Compliant</span>
+          <span>DPDP Act 2023</span>
         </div>
         <div class="flex items-center space-x-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/30 text-xs font-medium text-emerald-400">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>In-Silico Twin Active</span>
+          <span>Twin Active</span>
         </div>
       </div>
     </div>
@@ -728,6 +732,292 @@
     window.addEventListener('DOMContentLoaded', () => {
       const defaultPid = document.getElementById('patientSelect').value;
       loadPatient(defaultPid);
+    });
+
+    /* ====================================================================
+       AI GUIDED VIDEO PRESENTATION & TELEPROMPTER ENGINE
+       ==================================================================== */
+    const tourSteps = [
+      {
+        step: 1,
+        title: "Welcome & Clinical Mission in India",
+        subtitle: "Happiest Health Summit 2026 • Type 2 Diabetes Digital Twin",
+        text: "Welcome members of the jury and clinical experts. India faces a catastrophic diabetes crisis with over 101 million patients. Traditional clinical care is reactive—relying on quarterly HbA1c tests. Today, we demonstrate GlycoTwin-AI: a dynamic multimodal Digital Twin predicting adverse glycemic events 2 hours in advance.",
+        target: "header",
+        action: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        duration: 12
+      },
+      {
+        step: 2,
+        title: "Dual Data Stream Ingestion (EHR + Wearables)",
+        subtitle: "DPDP Act 2023 & HIPAA Compliant Data Fusion",
+        text: "Our architecture fuses two distinct temporal streams: Static Historical EHR (Asian Indian BMI >= 23, baseline HbA1c, renal eGFR, lipid dyslipidemia, and genetics) paired with Dynamic IoT Telemetry (5-minute CGM interstitial glucose, Heart Rate, HRV RMSSD, step cadence, and Indian meal carbs).",
+        target: "ptDemo",
+        action: () => {
+          document.getElementById('patientSelect').value = 'IND-PT-10007';
+          loadPatient('IND-PT-10007');
+          document.getElementById('ptDemo').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 13
+      },
+      {
+        step: 3,
+        title: "Patient Focus: IND-PT-10007 (High Postprandial Spikes)",
+        subtitle: "54-Year-Old Indian Male with High-Carbohydrate Rice Staple Diet",
+        text: "Notice Patient IND-PT-10007: Baseline HbA1c is 9.4% with 9 years of diabetes. Current glucose is 185 mg/dL. The Digital Twin calculates a steep positive glycemic velocity (+1.4 mg/dL/min) driven by recent Indian carbohydrate intake.",
+        target: "metricCurrentG",
+        action: () => {
+          document.getElementById('metricCurrentG').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 12
+      },
+      {
+        step: 4,
+        title: "2-Hour Ahead Predictive Early Warning",
+        subtitle: "Triage Alert: Impending Hyperglycemia Spike (>200 mg/dL)",
+        text: "Look at the main chart: The solid line shows observed CGM over the last 6 hours. The dashed purple curve projects the 2-hour ahead forecast with its 95% confidence band. The twin flags an impending spike to 218 mg/dL—triggering a WARNING AMBER alert.",
+        target: "cgmChart",
+        action: () => {
+          document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 13
+      },
+      {
+        step: 5,
+        title: "Physician 'What-If' Counterfactual Simulation",
+        subtitle: "Testing Personalized Interventions In-Silico Before Clinical Execution",
+        text: "Doctors cannot conduct risky trial-and-error experiments on real patients. Using our in-silico simulation engine, we test two non-pharmacological interventions: a 20-minute post-meal brisk walk and a 35g carb reduction (swapping polished white rice for foxtail millet).",
+        target: "walkSlider",
+        action: () => {
+          document.getElementById('walkSlider').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          walkSlider.value = 20; walkVal.innerText = "20 mins";
+          carbSlider.value = 35; carbVal.innerText = "35 g";
+        },
+        duration: 13
+      },
+      {
+        step: 6,
+        title: "Simulated Intervention Outcome: Spike Mitigated",
+        subtitle: "Predicted Glucose Drops by -38 mg/dL into Safe Range (180 mg/dL)",
+        text: "We click Run In-Silico Simulation. Notice the dashed orange curve rendering instantaneously on the chart! The simulated 2-hour glucose plummets from 218 mg/dL down to 180 mg/dL—successfully bringing the patient within target physiological boundaries (70-180 mg/dL).",
+        target: "simOutcomeBox",
+        action: () => {
+          document.getElementById('runSimBtn').click();
+          setTimeout(() => {
+            document.getElementById('simOutcomeBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        },
+        duration: 14
+      },
+      {
+        step: 7,
+        title: "Critical Scenario: Nocturnal Hypoglycemia Alert",
+        subtitle: "Patient IND-PT-10004: Nighttime Crash Flagged via Autonomic Telemetry",
+        text: "Now switching to Patient IND-PT-10004. At 02:30 AM, current glucose is 92 mg/dL. But look at the wearable telemetry: HRV RMSSD has collapsed to 14ms (sympathetic counter-regulatory surge). The Digital Twin triggers a CRITICAL RED ALERT: impending nocturnal hypo to 61 mg/dL at 04:30 AM!",
+        target: "riskBadge",
+        action: () => {
+          document.getElementById('patientSelect').value = 'IND-PT-10004';
+          loadPatient('IND-PT-10004');
+          setTimeout(() => {
+            document.getElementById('riskBadge').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 200);
+        },
+        duration: 14
+      },
+      {
+        step: 8,
+        title: "Clinical Metrics & Rigorous Validation",
+        subtitle: "MARD: 7.15% (Gold Standard < 10%) | RMSE: 14.50 mg/dL",
+        text: "Evaluated on unseen patient holdouts across 59,940 continuous telemetry points: GlycoTwin-AI achieves a clinical-grade MARD of 7.15% and RMSE of 14.50 mg/dL, with 65.31% precision on adverse spikes and a 120-minute lead time.",
+        target: "cgmChart",
+        action: () => {
+          document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 13
+      },
+      {
+        step: 9,
+        title: "DPDP Act 2023 Compliance & Data Governance",
+        subtitle: "100% Synthetic Patient Data • Zero PII • Audit Trail",
+        text: "The system strictly complies with the Indian DPDP Act 2023 and HIPAA sandbox rules. Zero real patient PII is stored. Generative pipelines mimic authentic ICMR-INDIAB epidemiology with complete patient-level train/test separation.",
+        target: "header",
+        action: () => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        },
+        duration: 12
+      },
+      {
+        step: 10,
+        title: "The Vision: Proactive Digital Healthcare in India",
+        subtitle: "Happiest Health Summit 2026 • Reimagining and Reforming Care",
+        text: "GlycoTwin-AI transforms diabetes care from reactive crisis management to proactive in-silico prevention, saving families ₹40,000 to ₹1,50,000 in emergency hospitalizations and reducing microvascular complications by 37%. Our complete codebase and presentation are open-source on GitHub. Thank you.",
+        target: "header",
+        action: () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        duration: 14
+      }
+    ];
+
+    let currentTourIdx = 0;
+    let tourTimer = null;
+    let tourSecondsLeft = 0;
+    let isTourPaused = false;
+    let speechEnabled = true;
+
+    const tourBox = document.createElement('div');
+    tourBox.id = 'aiTourBox';
+    tourBox.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-4xl z-50 p-5 rounded-2xl bg-slate-900/95 border-2 border-indigo-500/70 shadow-2xl shadow-indigo-500/30 backdrop-blur-xl transition-all duration-300 text-slate-100 hidden';
+    tourBox.innerHTML = `
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <span class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-microphone-lines"></i>
+          </span>
+          <div>
+            <span class="text-[11px] font-mono uppercase tracking-wider text-indigo-400 font-bold" id="tourStepBadge">Step 1 of 10</span>
+            <h4 class="text-sm font-bold text-slate-100" id="tourTitle">Welcome</h4>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3 text-xs">
+          <!-- Voice Toggle -->
+          <label class="flex items-center space-x-1.5 cursor-pointer bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/60">
+            <input type="checkbox" id="tourVoiceToggle" checked class="accent-indigo-500 cursor-pointer">
+            <span class="text-slate-300 text-[11px]"><i class="fa-solid fa-volume-high text-sky-400 mr-1"></i>AI Voice</span>
+          </label>
+
+          <!-- Timer Badge -->
+          <span class="bg-indigo-950/80 text-indigo-300 px-2 py-1 rounded border border-indigo-500/30 font-mono text-[11px]" id="tourTimerDisplay">12s</span>
+
+          <!-- Close -->
+          <button id="tourCloseBtn" class="text-slate-400 hover:text-white p-1 text-base">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Subtitle Message Container -->
+      <div class="py-3">
+        <p class="text-xs text-indigo-300 font-medium mb-1" id="tourSubtitle">Subtitle</p>
+        <p class="text-sm text-slate-100 font-sans leading-relaxed tracking-wide bg-slate-950/40 p-3 rounded-xl border border-slate-800" id="tourText">
+          Narrative text appears here...
+        </p>
+      </div>
+
+      <!-- Controls & Progress -->
+      <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+        <div class="flex items-center space-x-2">
+          <button id="tourPrevBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Prev
+          </button>
+          <button id="tourPlayPauseBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            <i class="fa-solid fa-pause mr-1"></i> Pause
+          </button>
+          <button id="tourNextBtn" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-semibold text-white transition">
+            Next <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+
+        <div class="w-1/3 bg-slate-800 rounded-full h-1.5 overflow-hidden">
+          <div id="tourProgressBar" class="bg-gradient-to-r from-sky-400 to-indigo-500 h-1.5 transition-all duration-300" style="width: 10%;"></div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(tourBox);
+
+    // Speak helper using Web Speech API
+    function speakText(text) {
+      if (!speechEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel(); // Stop prior
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function renderTourStep(idx) {
+      if (idx < 0 || idx >= tourSteps.length) {
+        endTour();
+        return;
+      }
+      currentTourIdx = idx;
+      const cur = tourSteps[idx];
+
+      // Update text
+      document.getElementById('tourStepBadge').innerText = `Step ${cur.step} of ${tourSteps.length}`;
+      document.getElementById('tourTitle').innerText = cur.title;
+      document.getElementById('tourSubtitle').innerText = cur.subtitle;
+      document.getElementById('tourText').innerText = cur.text;
+      document.getElementById('tourProgressBar').style.width = `${((idx + 1) / tourSteps.length) * 100}%`;
+
+      // Trigger step actions
+      if (cur.action) cur.action();
+
+      // Trigger speech if enabled
+      speakText(`${cur.title}. ${cur.text}`);
+
+      // Set timer
+      clearInterval(tourTimer);
+      tourSecondsLeft = cur.duration;
+      document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+
+      tourTimer = setInterval(() => {
+        if (!isTourPaused) {
+          tourSecondsLeft--;
+          document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+          if (tourSecondsLeft <= 0) {
+            clearInterval(tourTimer);
+            renderTourStep(currentTourIdx + 1);
+          }
+        }
+      }, 1000);
+    }
+
+    function startTour() {
+      tourBox.classList.remove('hidden');
+      isTourPaused = false;
+      document.getElementById('tourPlayPauseBtn').innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause`;
+      renderTourStep(0);
+    }
+
+    function endTour() {
+      clearInterval(tourTimer);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      tourBox.classList.add('hidden');
+    }
+
+    // Event listeners
+    document.getElementById('startAiTourBtn').addEventListener('click', startTour);
+    document.getElementById('tourCloseBtn').addEventListener('click', endTour);
+
+    document.getElementById('tourNextBtn').addEventListener('click', () => {
+      renderTourStep(currentTourIdx + 1);
+    });
+
+    document.getElementById('tourPrevBtn').addEventListener('click', () => {
+      renderTourStep(Math.max(0, currentTourIdx - 1));
+    });
+
+    document.getElementById('tourPlayPauseBtn').addEventListener('click', () => {
+      isTourPaused = !isTourPaused;
+      const btn = document.getElementById('tourPlayPauseBtn');
+      if (isTourPaused) {
+        btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Resume`;
+        if ('speechSynthesis' in window) window.speechSynthesis.pause();
+      } else {
+        btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause`;
+        if ('speechSynthesis' in window) window.speechSynthesis.resume();
+      }
+    });
+
+    document.getElementById('tourVoiceToggle').addEventListener('change', (e) => {
+      speechEnabled = e.target.checked;
+      if (!speechEnabled && ('speechSynthesis' in window)) {
+        window.speechSynthesis.cancel();
+      } else if (speechEnabled) {
+        speakText(tourSteps[currentTourIdx].text);
+      }
     });
   </script>
 </body>
