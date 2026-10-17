@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlycoTwin-AI | Clinician Digital Twin Platform</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            },
+            medical: {
+              green: '#10b981',
+              amber: '#f59e0b',
+              red: '#ef4444',
+              purple: '#8b5cf6',
+              dark: '#0f172a',
+              card: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0b1120;
+      color: #e2e8f0;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      transition: all 0.2s ease-in-out;
+    }
+    .pulse-red {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: pulse 1.6s infinite;
+    }
+    .pulse-amber {
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    .pulse-green {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 2.2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased text-slate-100">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur-md px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 text-white font-bold text-xl">
+          <i class="fa-solid fa-dna"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-indigo-300 to-emerald-400">
+              GlycoTwin-AI
+            </h1>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              Digital Twin v1.0
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">
+            Happiest Health Summit 2026 • Proactive Multimodal Glycemic Twin for Indian Diabetics
+          </p>
+        </div>
+      </div>
+
+      <!-- Compliance & Status Badges -->
+      <div class="flex items-center space-x-3">
+        <button id="startAiTourBtn" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-500 hover:from-purple-500 hover:to-sky-400 font-semibold text-xs shadow-md shadow-indigo-500/25 transition flex items-center space-x-2 text-white">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+          <span>🎬 Start AI Guided Video Tour</span>
+        </button>
+        <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs text-slate-300">
+          <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+          <span>DPDP Act 2023</span>
+        </div>
+        <div class="flex items-center space-x-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/30 text-xs font-medium text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Twin Active</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Clinical Cockpit Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- Top Ribbon: Patient Selector & High-Risk Alert Banner -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Patient Selector & Quick EHR Card -->
+      <div class="lg:col-span-1 glass-card p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center">
+            <i class="fa-solid fa-user-doctor mr-2 text-sky-400"></i> Virtual Patient Selector
+          </h2>
+          <span class="text-xs font-mono text-slate-400" id="ptCount">Cohort: 15 Twins</span>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5 font-medium">Select Patient Digital Twin:</label>
+          <select id="patientSelect" class="w-full bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
+            
+<option value="IND-PT-10007" selected>IND-PT-10007 - High Postprandial Spikes (Rice Staple)</option>
+<option value="IND-PT-10004">IND-PT-10004 - Nocturnal Hypoglycemia Prone (Insulin)</option>
+<option value="IND-PT-10001">IND-PT-10001 - Controlled Baseline (Metformin)</option>
+<option value="IND-PT-10012">IND-PT-10012 - Moderate Dysglycemic Cohort</option>
+
+          </select>
+          <button id="openEnrollModalBtn" type="button" class="w-full mt-2.5 py-2 px-3 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 shadow-sm transition">
+            <i class="fa-solid fa-user-plus text-amber-300"></i>
+            <span>+ Enroll New Patient (ABHA / EHR)</span>
+          </button>
+        </div>
+
+        <!-- Static EHR Summary Pills -->
+        <div class="pt-2 border-t border-slate-800 space-y-2 text-xs">
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Demographics:</span>
+            <span id="ptDemo" class="font-semibold text-slate-200">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">BMI / Asian Indian Risk:</span>
+            <span id="ptBmi" class="font-semibold text-slate-200">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Baseline HbA1c / FBG:</span>
+            <span id="ptHbA1c" class="font-semibold text-sky-400 font-mono">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Renal Function (eGFR):</span>
+            <span id="ptEgfr" class="font-semibold text-slate-200">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Current Pharmacotherapy:</span>
+            <span id="ptMeds" class="font-semibold text-emerald-400 truncate max-w-[190px]">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1">
+            <span class="text-slate-400">Dietary Phenotype:</span>
+            <span id="ptDiet" class="font-semibold text-amber-300 truncate max-w-[190px]">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Digital Twin Core Status & 2-Hour Ahead Predictive Gauge -->
+      <div class="lg:col-span-2 glass-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center space-x-2">
+            <span class="p-2 bg-sky-500/10 text-sky-400 rounded-lg text-lg">
+              <i class="fa-solid fa-brain"></i>
+            </span>
+            <div>
+              <h2 class="text-base font-bold text-slate-100">Digital Twin Multimodal State & Early Warning</h2>
+              <p class="text-xs text-slate-400">Fusing Continuous Glucose Monitor, Apple/Fitbit Wearable PPG, & Static EHR</p>
+            </div>
+          </div>
+          <div id="riskBadge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-current"></span>
+            <span id="riskText">Evaluating...</span>
+          </div>
+        </div>
+
+        <!-- 4-Pillar Clinical Metric Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4">
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>Current CGM</span>
+              <i class="fa-solid fa-droplet text-sky-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-slate-100" id="metricCurrentG">--</div>
+            <div class="text-[11px] text-slate-400 mt-1" id="metricGVelocity">Velocity: 0.0 mg/dL/min</div>
+          </div>
+
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>2-Hr Forecast</span>
+              <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-indigo-300" id="metricPredG">--</div>
+            <div class="text-[11px] text-slate-400 mt-1">Horizon: +120 mins</div>
+          </div>
+
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>Autonomic Stress</span>
+              <i class="fa-solid fa-heart-pulse text-rose-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-rose-300" id="metricAutonomic">--</div>
+            <div class="text-[11px] text-slate-400 mt-1">HR/HRV Coupling</div>
+          </div>
+
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>Time-in-Range (TIR)</span>
+              <i class="fa-solid fa-bullseye text-emerald-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-emerald-300" id="metricTIR">--%</div>
+            <div class="text-[11px] text-slate-400 mt-1">Target: 70-180 mg/dL</div>
+          </div>
+        </div>
+
+        <!-- Clinical Explanation Alert Callout -->
+        <div id="explanationBox" class="p-3.5 rounded-xl border text-xs flex items-start space-x-3">
+          <i class="fa-solid fa-circle-exclamation text-base mt-0.5"></i>
+          <div class="flex-1">
+            <span class="font-bold block mb-0.5" id="alertHeadline">Clinical Rationale:</span>
+            <p id="alertBody" class="text-slate-300 leading-relaxed">Analyzing physiological data stream...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section: Main Telemetry + Predictive Horizon -->
+    <div class="grid grid-cols-1 gap-6">
+      <div class="glass-card p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold text-slate-100 flex items-center">
+              <i class="fa-solid fa-chart-line mr-2 text-sky-400"></i>
+              Real-Time CGM Telemetry & 2-Hour Predictive Twin Trajectory
+            </h3>
+            <p class="text-xs text-slate-400">Solid line: Observed CGM | Dashed cyan: AI 2-Hour Forecast | Dashed Orange: In-Silico "What-If" Simulation</p>
+          </div>
+          <div class="flex items-center space-x-3 text-xs">
+            <span class="flex items-center"><span class="w-3 h-1 bg-emerald-500 mr-1.5 rounded-full"></span> Target Range (70-180)</span>
+            <span class="flex items-center"><span class="w-3 h-1 bg-sky-400 mr-1.5 rounded-full"></span> Observed CGM</span>
+            <span class="flex items-center"><span class="w-3 h-1 border-t-2 border-dashed border-indigo-400 mr-1.5"></span> 2h Forecast</span>
+            <span class="flex items-center" id="simLegend" style="display:none;"><span class="w-3 h-1 border-t-2 border-dashed border-amber-400 mr-1.5"></span> What-If Simulation</span>
+          </div>
+        </div>
+
+        <div class="h-80 w-full">
+          <canvas id="cgmChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Secondary Wearable Streams: HR, HRV, Steps, Meals -->
+      <div class="glass-card p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-300 flex items-center">
+            <i class="fa-solid fa-watch mr-2 text-indigo-400"></i> Fused Wearable & Behavioral Telemetry (Past 6 Hours)
+          </h3>
+          <div class="text-xs text-slate-400">Heart Rate (bpm) • HRV RMSSD (ms) • Steps • Indian Meals (carbs)</div>
+        </div>
+        <div class="h-44 w-full">
+          <canvas id="wearablesChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physician "What-If" In-Silico Counterfactual Simulation Playground -->
+    <div class="glass-card p-6 border-indigo-500/30 space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-800 gap-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-indigo-600 flex items-center justify-center text-white text-lg shadow-md shadow-amber-500/20">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-100">Physician "What-If" Digital Twin Counterfactual Simulator</h3>
+            <p class="text-xs text-slate-400">Simulate personalized behavioral & pharmacotherapy adjustments to proactively optimize patient trajectory</p>
+          </div>
+        </div>
+        <button id="runSimBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 font-semibold text-sm shadow-lg shadow-sky-500/25 transition flex items-center space-x-2">
+          <i class="fa-solid fa-play text-xs"></i>
+          <span>Run In-Silico Simulation</span>
+        </button>
+      </div>
+
+      <!-- 3 Dynamic Adjustment Controls -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Post-meal Brisk Walk -->
+        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-semibold text-slate-300 flex items-center">
+              <i class="fa-solid fa-person-walking text-sky-400 mr-2 text-sm"></i> Post-Prandial Walk
+            </label>
+            <span id="walkVal" class="text-xs font-mono font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded">0 mins</span>
+          </div>
+          <input type="range" id="walkSlider" min="0" max="45" step="5" value="0" class="w-full accent-sky-500 cursor-pointer">
+          <p class="text-[11px] text-slate-400">Activates muscular GLUT-4 glucose transporters to blunt postprandial glucose peaks.</p>
+        </div>
+
+        <!-- Indian Carb Substitution / Reduction -->
+        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-semibold text-slate-300 flex items-center">
+              <i class="fa-solid fa-bowl-rice text-amber-400 mr-2 text-sm"></i> Carb Swap / Reduction
+            </label>
+            <span id="carbVal" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">0 g</span>
+          </div>
+          <input type="range" id="carbSlider" min="0" max="60" step="5" value="0" class="w-full accent-amber-500 cursor-pointer">
+          <p class="text-[11px] text-slate-400">Swap refined white rice with Foxtail/Barnyard millets or reduce high-GI Indian carbs.</p>
+        </div>
+
+        <!-- Basal Insulin / Medication Timing -->
+        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-semibold text-slate-300 flex items-center">
+              <i class="fa-solid fa-syringe text-emerald-400 mr-2 text-sm"></i> Insulin / Med Dose Shift
+            </label>
+            <span id="insulinVal" class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">0 U</span>
+          </div>
+          <input type="range" id="insulinSlider" min="-4" max="4" step="1" value="0" class="w-full accent-emerald-500 cursor-pointer">
+          <p class="text-[11px] text-slate-400">Titrate basal insulin (-4U to +4U) to prevent nocturnal hypoglycemia or control spikes.</p>
+        </div>
+      </div>
+
+      <!-- Simulation Outcome Comparison Box -->
+      <div id="simOutcomeBox" class="hidden p-4 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xl font-bold">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-slate-100" id="simHeadline">Simulation Complete</h4>
+            <p class="text-xs text-slate-300 mt-0.5" id="simRecommendation">Analyzing counterfactual impact...</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-6 text-right">
+          <div>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Baseline 2h</span>
+            <span class="text-lg font-mono font-bold text-slate-300" id="simBaseVal">-- mg/dL</span>
+          </div>
+          <i class="fa-solid fa-arrow-right text-slate-500"></i>
+          <div>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Simulated 2h</span>
+            <span class="text-lg font-mono font-bold text-emerald-400" id="simNewVal">-- mg/dL</span>
+          </div>
+          <div class="border-l border-slate-700 pl-4">
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Projected Delta</span>
+            <span class="text-xl font-mono font-bold text-sky-400" id="simDeltaVal">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical & Clinical Benchmarking Footer -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-400">
+      <div class="glass-card p-4 space-y-1.5">
+        <span class="font-bold text-slate-300 block"><i class="fa-solid fa-microchip text-sky-400 mr-1.5"></i> Model Architecture</span>
+        <p>Multimodal Feature Fusion Engine combining Static EHR Latent Embeddings + Temporal Dynamic Sliding-Window XGBoost/HistGBM.</p>
+      </div>
+
+      <div class="glass-card p-4 space-y-1.5">
+        <span class="font-bold text-slate-300 block"><i class="fa-solid fa-trophy text-amber-400 mr-1.5"></i> Summit Evaluation Metrics</span>
+        <p>Continuous Forecast MARD: <span class="text-emerald-400 font-mono font-semibold">{{ metrics.get('mard_pct', '7.15') }}%</span> | RMSE: <span class="text-emerald-400 font-mono font-semibold">{{ metrics.get('rmse_mg_dl', '14.5') }} mg/dL</span> | Macro F1: <span class="text-emerald-400 font-mono font-semibold">{{ metrics.get('macro_f1', '0.54') }}</span></p>
+      </div>
+
+      <div class="glass-card p-4 space-y-1.5">
+        <span class="font-bold text-slate-300 block"><i class="fa-solid fa-gavel text-indigo-400 mr-1.5"></i> DPDP Act 2023 Compliance</span>
+        <p>Anonymized synthetic cohorts (Synthea/MIMIC-IV standards), zero PII storage, zero data leakage across patient boundary splits.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-4 text-center text-xs text-slate-500">
+    GlycoTwin-AI Proof-of-Concept • Happiest Health Reimagining and Reforming Healthcare in India Summit 2026, Bengaluru
+  </footer>
+
+  <!-- Enroll Patient Modal (ABHA / EHR Ingestion Gateway) -->
+  <div id="enrollModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-id-card-clip"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-100">Patient Onboarding & Stream Ingestion</h3>
+            <p class="text-xs text-slate-400">Ayushman Bharat Digital Mission (ABHA) & Wearable Gateway</p>
+          </div>
+        </div>
+        <button id="closeEnrollModalBtn" type="button" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="enrollPatientForm" class="space-y-4">
+        <!-- Personal / ABHA details -->
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Patient Full Name</label>
+            <input id="newPtName" type="text" required placeholder="e.g. Ramesh Patel" value="Ramesh Patel" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-500">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">ABHA Health ID (India)</label>
+            <input id="newPtAbha" type="text" placeholder="91-4421-9981-2210" value="91-4421-9981-2210" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono focus:outline-none focus:ring-1 focus:ring-sky-500">
+          </div>
+        </div>
+
+        <!-- Demographics -->
+        <div class="grid grid-cols-4 gap-2 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Age (yrs)</label>
+            <input id="newPtAge" type="number" value="52" min="18" max="95" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Gender</label>
+            <select id="newPtGender" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-slate-200">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Asian BMI</label>
+            <input id="newPtBmi" type="number" step="0.1" value="27.2" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Duration (y)</label>
+            <input id="newPtDuration" type="number" step="0.1" value="7.0" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200">
+          </div>
+        </div>
+
+        <!-- Clinical EHR Baselines -->
+        <div class="grid grid-cols-3 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Baseline HbA1c (%)</label>
+            <input id="newPtHba1c" type="number" step="0.1" value="9.2" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sky-400 font-bold">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Fasting Glucose (mg/dL)</label>
+            <input id="newPtFbg" type="number" value="180" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Renal eGFR (mL/min)</label>
+            <input id="newPtEgfr" type="number" value="72" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+          </div>
+        </div>
+
+        <!-- Prescribed Meds & Diet -->
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Pharmacotherapy Regimen</label>
+            <select id="newPtMeds" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+              <option value="Metformin + SGLT2i + DPP4i">Metformin + SGLT2i + DPP4i</option>
+              <option value="Metformin + Basal Insulin (15U)">Metformin + Basal Insulin (15U)</option>
+              <option value="Metformin 1000mg Monotherapy">Metformin 1000mg Monotherapy</option>
+              <option value="Basal-Bolus Intensive Insulin">Basal-Bolus Intensive Insulin</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-medium">Indian Dietary Pattern</label>
+            <select id="newPtDiet" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+              <option value="High-Carb Rice Staple (South/East)">High-Carb Rice Staple (South/East)</option>
+              <option value="Wheat/Roti Staple (North/West)">Wheat/Roti Staple (North/West)</option>
+              <option value="Mixed Urban Balanced">Mixed Urban Balanced</option>
+              <option value="Vegetarian High Glycemic Index">Vegetarian High Glycemic Index</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- IoT Wearable Sensor Pairing -->
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 space-y-2 text-xs">
+          <span class="font-semibold text-slate-300 block flex items-center">
+            <i class="fa-solid fa-tower-broadcast text-emerald-400 mr-2"></i> IoT Dynamic Streams (Real-Time Fusion):
+          </span>
+          <div class="grid grid-cols-2 gap-2 text-slate-300">
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" checked disabled class="rounded text-sky-500">
+              <span>CGM: Abbott FreeStyle Libre 3 / Dexcom</span>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" checked disabled class="rounded text-sky-500">
+              <span>Smartwatch: HR / HRV RMSSD / Steps</span>
+            </label>
+          </div>
+          <p class="text-[11px] text-slate-500 italic">Synthetic time-series stream generated conforming to DPDP Act 2023 sandbox rules.</p>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end space-x-3">
+          <button type="button" id="cancelEnrollBtn" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-500 hover:from-sky-400 hover:to-emerald-400 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition flex items-center space-x-2">
+            <i class="fa-solid fa-microchip text-amber-300"></i>
+            <span>Initialize Digital Twin & Sync Streams</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Frontend JavaScript Logic & Chart.js Integration -->
+  <script>
+    let cgmChartInstance = null;
+    let wearablesChartInstance = null;
+    let currentPatientData = null;
+
+    // Sliders
+    const walkSlider = document.getElementById('walkSlider');
+    const carbSlider = document.getElementById('carbSlider');
+    const insulinSlider = document.getElementById('insulinSlider');
+    const walkVal = document.getElementById('walkVal');
+    const carbVal = document.getElementById('carbVal');
+    const insulinVal = document.getElementById('insulinVal');
+
+    walkSlider.addEventListener('input', (e) => walkVal.innerText = `${e.target.value} mins`);
+    carbSlider.addEventListener('input', (e) => carbVal.innerText = `${e.target.value} g`);
+    insulinSlider.addEventListener('input', (e) => insulinVal.innerText = `${e.target.value > 0 ? '+' : ''}${e.target.value} U`);
+
+    // Fetch and display patient digital twin
+    
+    // Embedded Patient Data for Static Hosting (GitHub Pages / Vercel)
+    const EMBEDDED_PATIENTS = {"IND-PT-10007": {"ehr": {"patient_id": "IND-PT-10007", "age": 60, "gender": "Female", "bmi": 29.0, "waist_hip_ratio": 0.87, "diabetes_duration_years": 5.1, "hba1c_pct": 10.9, "fasting_glucose_mg_dl": 224.6, "egfr_ml_min": 63.9, "serum_creatinine_mg_dl": 1.72, "triglycerides_mg_dl": 130.8, "hdl_mg_dl": 43.3, "ldl_mg_dl": 103.6, "hypertension": 1, "diabetic_retinopathy": 1, "diabetic_neuropathy": 0, "cvd_history": 1, "tcf7l2_risk_allele_count": 0, "daily_metformin_mg": 2000, "daily_sglt2i_mg": 0, "daily_dpp4i_mg": 0, "daily_sulfonylurea_mg": 0, "insulin_user": 1, "basal_insulin_units": 12, "medication_regimen": "Metformin + Basal Insulin (12U)", "dietary_pattern": "High-Carb Rice Staple (South/East)"}, "twin_status": {"predicted_glucose_2h": 191.8, "predicted_event_code": 1, "predicted_event_name": "Impending Hyperglycemia Spike (>200 mg/dL)", "risk_level": "HIGH", "probabilities": {"in_range": 0.174, "hyper_spike": 0.812, "hypoglycemia": 0.014}, "clinical_explanations": ["Significant recent carbohydrate ingestion (63g) driving rapid postprandial absorption.", "High baseline HbA1c (10.9%) impairs beta-cell clearance rate."]}, "telemetry": {"timestamps": ["2026-10-14 16:00:00", "2026-10-14 16:05:00", "2026-10-14 16:10:00", "2026-10-14 16:15:00", "2026-10-14 16:20:00", "2026-10-14 16:25:00", "2026-10-14 16:30:00", "2026-10-14 16:35:00", "2026-10-14 16:40:00", "2026-10-14 16:45:00", "2026-10-14 16:50:00", "2026-10-14 16:55:00", "2026-10-14 17:00:00", "2026-10-14 17:05:00", "2026-10-14 17:10:00", "2026-10-14 17:15:00", "2026-10-14 17:20:00", "2026-10-14 17:25:00", "2026-10-14 17:30:00", "2026-10-14 17:35:00", "2026-10-14 17:40:00", "2026-10-14 17:45:00", "2026-10-14 17:50:00", "2026-10-14 17:55:00", "2026-10-14 18:00:00", "2026-10-14 18:05:00", "2026-10-14 18:10:00", "2026-10-14 18:15:00", "2026-10-14 18:20:00", "2026-10-14 18:25:00", "2026-10-14 18:30:00", "2026-10-14 18:35:00", "2026-10-14 18:40:00", "2026-10-14 18:45:00", "2026-10-14 18:50:00", "2026-10-14 18:55:00", "2026-10-14 19:00:00", "2026-10-14 19:05:00", "2026-10-14 19:10:00", "2026-10-14 19:15:00", "2026-10-14 19:20:00", "2026-10-14 19:25:00", "2026-10-14 19:30:00", "2026-10-14 19:35:00", "2026-10-14 19:40:00", "2026-10-14 19:45:00", "2026-10-14 19:50:00", "2026-10-14 19:55:00", "2026-10-14 20:00:00", "2026-10-14 20:05:00", "2026-10-14 20:10:00", "2026-10-14 20:15:00", "2026-10-14 20:20:00", "2026-10-14 20:25:00", "2026-10-14 20:30:00", "2026-10-14 20:35:00", "2026-10-14 20:40:00", "2026-10-14 20:45:00", "2026-10-14 20:50:00", "2026-10-14 20:55:00", "2026-10-14 21:00:00", "2026-10-14 21:05:00", "2026-10-14 21:10:00", "2026-10-14 21:15:00", "2026-10-14 21:20:00", "2026-10-14 21:25:00", "2026-10-14 21:30:00", "2026-10-14 21:35:00", "2026-10-14 21:40:00", "2026-10-14 21:45:00", "2026-10-14 21:50:00", "2026-10-14 21:55:00"], "cgm_glucose": [210.1, 207.8, 207.3, 205.1, 206.4, 207.0, 209.0, 205.9, 208.7, 208.6, 206.4, 206.6, 207.0, 206.5, 209.5, 209.8, 210.9, 210.9, 210.5, 211.6, 213.4, 213.5, 211.2, 211.9, 213.9, 212.1, 210.9, 209.0, 209.2, 203.9, 201.6, 198.3, 197.2, 196.5, 196.5, 193.8, 193.1, 191.8, 191.3, 190.3, 187.4, 185.5, 182.8, 181.8, 184.3, 187.7, 192.6, 195.4, 197.3, 199.0, 198.5, 199.7, 200.1, 197.5, 194.1, 193.6, 193.3, 192.7, 194.3, 194.0, 215.6, 212.5, 211.4, 210.4, 211.2, 209.3, 208.3, 208.6, 207.6, 206.0, 206.1, 206.3], "heart_rate": [79.6, 80.1, 78.6, 78.7, 74.8, 72.5, 73.0, 72.5, 72.9, 73.0, 72.4, 73.3, 72.6, 72.1, 73.1, 74.6, 75.0, 74.0, 73.6, 70.6, 72.7, 71.8, 74.3, 72.2, 78.8, 86.0, 92.3, 96.8, 99.2, 101.2, 103.5, 106.0, 108.0, 105.6, 107.2, 106.9, 108.1, 111.1, 111.1, 110.9, 110.3, 112.7, 106.4, 102.1, 97.5, 93.4, 91.6, 86.9, 86.7, 84.0, 82.4, 82.5, 82.2, 79.4, 78.7, 78.2, 76.2, 74.8, 75.2, 74.3, 74.0, 72.4, 72.6, 72.2, 75.8, 76.9, 75.4, 75.8, 75.8, 75.4, 76.4, 76.6], "hrv_rmssd": [38.0, 38.4, 36.0, 35.6, 35.1, 36.5, 36.4, 34.9, 34.1, 32.6, 35.5, 34.4, 36.1, 34.8, 35.6, 35.1, 35.1, 32.6, 31.1, 31.4, 32.9, 34.5, 34.8, 32.4, 33.1, 31.7, 33.7, 35.1, 34.9, 36.5, 35.2, 36.7, 35.8, 37.7, 39.4, 37.7, 36.1, 35.7, 37.0, 39.2, 41.2, 38.6, 37.8, 37.9, 37.1, 35.8, 35.8, 36.2, 37.2, 36.9, 36.5, 35.9, 36.5, 38.2, 37.3, 35.7, 36.2, 36.5, 36.0, 36.2, 36.3, 37.4, 36.2, 34.3, 35.1, 37.6, 38.5, 38.2, 38.5, 40.7, 41.0, 40.7], "steps": [28, 16, 28, 29, 23, 25, 29, 20, 24, 35, 31, 23, 23, 28, 21, 28, 23, 25, 41, 29, 26, 26, 27, 27, 155, 172, 204, 171, 180, 183, 180, 208, 173, 167, 192, 193, 182, 197, 182, 163, 159, 196, 26, 30, 16, 24, 25, 25, 30, 18, 18, 27, 34, 34, 23, 28, 25, 20, 35, 27, 22, 21, 31, 34, 21, 24, 25, 18, 24, 32, 29, 18], "meal_carbs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 62.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "forecast": {"points": [205.7, 205.1, 204.5, 203.9, 203.3, 202.7, 202.1, 201.5, 200.9, 200.3, 199.7, 199.0, 198.4, 197.8, 197.2, 196.6, 196.0, 195.4, 194.8, 194.2, 193.6, 193.0, 192.4, 191.8], "upper_bound": [211.5, 213.3, 214.5, 215.5, 216.3, 216.9, 217.4, 217.9, 218.3, 218.6, 218.9, 219.1, 219.3, 219.5, 219.7, 219.8, 219.9, 220.0, 220.1, 220.1, 220.2, 220.2, 220.2, 220.2], "lower_bound": [199.9, 196.9, 194.5, 192.3, 190.3, 188.5, 186.8, 185.1, 183.5, 182.0, 180.5, 178.9, 177.5, 176.1, 174.7, 173.4, 172.1, 170.8, 169.5, 168.3, 167.0, 165.8, 164.6, 163.4], "horizon_minutes": 120}}, "IND-PT-10004": {"ehr": {"patient_id": "IND-PT-10004", "age": 49, "gender": "Male", "bmi": 19.3, "waist_hip_ratio": 0.97, "diabetes_duration_years": 15.6, "hba1c_pct": 7.4, "fasting_glucose_mg_dl": 142.2, "egfr_ml_min": 84.9, "serum_creatinine_mg_dl": 1.22, "triglycerides_mg_dl": 185.6, "hdl_mg_dl": 40.8, "ldl_mg_dl": 84.6, "hypertension": 1, "diabetic_retinopathy": 0, "diabetic_neuropathy": 0, "cvd_history": 0, "tcf7l2_risk_allele_count": 1, "daily_metformin_mg": 1000, "daily_sglt2i_mg": 0, "daily_dpp4i_mg": 0, "daily_sulfonylurea_mg": 0, "insulin_user": 0, "basal_insulin_units": 0, "medication_regimen": "Metformin", "dietary_pattern": "Mixed Urban Balanced"}, "twin_status": {"predicted_glucose_2h": 127.9, "predicted_event_code": 0, "predicted_event_name": "In-Range / Stable", "risk_level": "LOW", "probabilities": {"in_range": 0.998, "hyper_spike": 0.001, "hypoglycemia": 0.002}, "clinical_explanations": ["Significant recent carbohydrate ingestion (82g) driving rapid postprandial absorption."]}, "telemetry": {"timestamps": ["2026-10-14 16:00:00", "2026-10-14 16:05:00", "2026-10-14 16:10:00", "2026-10-14 16:15:00", "2026-10-14 16:20:00", "2026-10-14 16:25:00", "2026-10-14 16:30:00", "2026-10-14 16:35:00", "2026-10-14 16:40:00", "2026-10-14 16:45:00", "2026-10-14 16:50:00", "2026-10-14 16:55:00", "2026-10-14 17:00:00", "2026-10-14 17:05:00", "2026-10-14 17:10:00", "2026-10-14 17:15:00", "2026-10-14 17:20:00", "2026-10-14 17:25:00", "2026-10-14 17:30:00", "2026-10-14 17:35:00", "2026-10-14 17:40:00", "2026-10-14 17:45:00", "2026-10-14 17:50:00", "2026-10-14 17:55:00", "2026-10-14 18:00:00", "2026-10-14 18:05:00", "2026-10-14 18:10:00", "2026-10-14 18:15:00", "2026-10-14 18:20:00", "2026-10-14 18:25:00", "2026-10-14 18:30:00", "2026-10-14 18:35:00", "2026-10-14 18:40:00", "2026-10-14 18:45:00", "2026-10-14 18:50:00", "2026-10-14 18:55:00", "2026-10-14 19:00:00", "2026-10-14 19:05:00", "2026-10-14 19:10:00", "2026-10-14 19:15:00", "2026-10-14 19:20:00", "2026-10-14 19:25:00", "2026-10-14 19:30:00", "2026-10-14 19:35:00", "2026-10-14 19:40:00", "2026-10-14 19:45:00", "2026-10-14 19:50:00", "2026-10-14 19:55:00", "2026-10-14 20:00:00", "2026-10-14 20:05:00", "2026-10-14 20:10:00", "2026-10-14 20:15:00", "2026-10-14 20:20:00", "2026-10-14 20:25:00", "2026-10-14 20:30:00", "2026-10-14 20:35:00", "2026-10-14 20:40:00", "2026-10-14 20:45:00", "2026-10-14 20:50:00", "2026-10-14 20:55:00", "2026-10-14 21:00:00", "2026-10-14 21:05:00", "2026-10-14 21:10:00", "2026-10-14 21:15:00", "2026-10-14 21:20:00", "2026-10-14 21:25:00", "2026-10-14 21:30:00", "2026-10-14 21:35:00", "2026-10-14 21:40:00", "2026-10-14 21:45:00", "2026-10-14 21:50:00", "2026-10-14 21:55:00"], "cgm_glucose": [103.6, 102.3, 101.4, 101.4, 101.4, 98.2, 97.7, 98.5, 102.0, 103.3, 103.5, 104.4, 105.2, 102.9, 105.0, 107.9, 107.5, 110.9, 117.3, 118.1, 120.0, 121.0, 122.5, 122.4, 123.2, 121.4, 112.5, 108.6, 106.3, 106.4, 102.8, 101.6, 101.0, 97.6, 96.6, 91.1, 87.5, 83.2, 81.4, 83.1, 80.1, 78.0, 79.4, 81.6, 79.8, 84.8, 84.8, 85.2, 87.3, 85.2, 84.5, 82.0, 80.1, 80.6, 83.0, 84.9, 85.7, 87.2, 87.8, 92.3, 110.3, 108.8, 109.7, 112.3, 115.1, 114.7, 117.5, 115.2, 115.8, 114.4, 116.4, 115.9], "heart_rate": [82.6, 83.3, 82.3, 78.9, 80.0, 82.0, 81.1, 81.0, 78.8, 79.5, 80.0, 78.6, 77.7, 77.5, 77.5, 79.4, 79.2, 79.4, 78.1, 77.1, 76.6, 77.8, 75.6, 73.8, 79.7, 85.8, 90.4, 95.1, 96.2, 100.2, 101.2, 103.5, 105.9, 107.3, 107.7, 108.1, 111.2, 114.9, 114.2, 112.5, 111.9, 111.2, 105.4, 99.5, 96.5, 94.3, 91.3, 87.6, 85.2, 83.4, 82.2, 80.5, 80.4, 79.3, 78.7, 76.9, 76.6, 76.7, 76.6, 77.3, 77.2, 77.6, 77.1, 78.0, 77.5, 75.7, 74.0, 73.9, 74.6, 73.6, 73.5, 73.2], "hrv_rmssd": [39.4, 39.2, 35.7, 35.0, 34.3, 33.6, 31.9, 34.1, 35.2, 35.7, 34.5, 33.3, 32.9, 32.9, 33.4, 34.8, 35.5, 35.9, 38.1, 36.2, 37.6, 38.5, 39.3, 37.6, 37.1, 35.6, 34.0, 34.1, 32.8, 31.9, 31.2, 32.9, 32.1, 31.8, 31.5, 34.2, 34.5, 33.3, 35.3, 36.1, 36.4, 36.6, 35.7, 39.3, 41.1, 41.9, 41.0, 41.1, 40.6, 37.2, 37.8, 36.1, 33.9, 36.1, 33.7, 33.3, 32.0, 32.7, 33.2, 33.8, 34.4, 33.6, 33.5, 35.1, 36.7, 39.8, 42.5, 40.6, 37.1, 36.6, 37.0, 34.6], "steps": [23, 24, 30, 23, 25, 32, 40, 17, 16, 23, 27, 26, 31, 24, 28, 30, 33, 27, 28, 26, 25, 25, 18, 27, 174, 175, 188, 184, 163, 204, 184, 188, 170, 192, 182, 174, 182, 172, 168, 152, 168, 187, 21, 25, 14, 18, 25, 27, 28, 30, 22, 25, 26, 33, 35, 22, 30, 27, 21, 21, 28, 35, 19, 24, 19, 17, 26, 28, 30, 18, 18, 22], "meal_carbs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 82.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "forecast": {"points": [116.4, 116.9, 117.4, 117.9, 118.4, 118.9, 119.4, 119.9, 120.4, 120.9, 121.4, 121.9, 122.4, 122.9, 123.4, 123.9, 124.4, 124.9, 125.4, 125.9, 126.4, 126.9, 127.4, 127.9], "upper_bound": [122.2, 125.1, 127.4, 129.5, 131.4, 133.1, 134.7, 136.3, 137.8, 139.2, 140.6, 142.0, 143.3, 144.6, 145.9, 147.1, 148.3, 149.5, 150.7, 151.8, 153.0, 154.1, 155.2, 156.3], "lower_bound": [110.6, 108.7, 107.4, 106.3, 105.4, 104.7, 104.1, 103.5, 103.0, 102.6, 102.2, 101.8, 101.5, 101.2, 100.9, 100.7, 100.5, 100.3, 100.1, 100.0, 99.8, 99.7, 99.6, 99.5], "horizon_minutes": 120}}, "IND-PT-10001": {"ehr": {"patient_id": "IND-PT-10001", "age": 50, "gender": "Male", "bmi": 23.5, "waist_hip_ratio": 0.85, "diabetes_duration_years": 6.5, "hba1c_pct": 8.0, "fasting_glucose_mg_dl": 160.0, "egfr_ml_min": 58.2, "serum_creatinine_mg_dl": 1.89, "triglycerides_mg_dl": 221.7, "hdl_mg_dl": 34.1, "ldl_mg_dl": 102.3, "hypertension": 1, "diabetic_retinopathy": 0, "diabetic_neuropathy": 0, "cvd_history": 0, "tcf7l2_risk_allele_count": 1, "daily_metformin_mg": 1500, "daily_sglt2i_mg": 10, "daily_dpp4i_mg": 20, "daily_sulfonylurea_mg": 0, "insulin_user": 0, "basal_insulin_units": 0, "medication_regimen": "Metformin + SGLT2i + DPP4i", "dietary_pattern": "Wheat/Roti Staple (North/West)"}, "twin_status": {"predicted_glucose_2h": 140.6, "predicted_event_code": 0, "predicted_event_name": "In-Range / Stable", "risk_level": "LOW", "probabilities": {"in_range": 0.998, "hyper_spike": 0.001, "hypoglycemia": 0.002}, "clinical_explanations": ["Significant recent carbohydrate ingestion (110g) driving rapid postprandial absorption."]}, "telemetry": {"timestamps": ["2026-10-14 16:00:00", "2026-10-14 16:05:00", "2026-10-14 16:10:00", "2026-10-14 16:15:00", "2026-10-14 16:20:00", "2026-10-14 16:25:00", "2026-10-14 16:30:00", "2026-10-14 16:35:00", "2026-10-14 16:40:00", "2026-10-14 16:45:00", "2026-10-14 16:50:00", "2026-10-14 16:55:00", "2026-10-14 17:00:00", "2026-10-14 17:05:00", "2026-10-14 17:10:00", "2026-10-14 17:15:00", "2026-10-14 17:20:00", "2026-10-14 17:25:00", "2026-10-14 17:30:00", "2026-10-14 17:35:00", "2026-10-14 17:40:00", "2026-10-14 17:45:00", "2026-10-14 17:50:00", "2026-10-14 17:55:00", "2026-10-14 18:00:00", "2026-10-14 18:05:00", "2026-10-14 18:10:00", "2026-10-14 18:15:00", "2026-10-14 18:20:00", "2026-10-14 18:25:00", "2026-10-14 18:30:00", "2026-10-14 18:35:00", "2026-10-14 18:40:00", "2026-10-14 18:45:00", "2026-10-14 18:50:00", "2026-10-14 18:55:00", "2026-10-14 19:00:00", "2026-10-14 19:05:00", "2026-10-14 19:10:00", "2026-10-14 19:15:00", "2026-10-14 19:20:00", "2026-10-14 19:25:00", "2026-10-14 19:30:00", "2026-10-14 19:35:00", "2026-10-14 19:40:00", "2026-10-14 19:45:00", "2026-10-14 19:50:00", "2026-10-14 19:55:00", "2026-10-14 20:00:00", "2026-10-14 20:05:00", "2026-10-14 20:10:00", "2026-10-14 20:15:00", "2026-10-14 20:20:00", "2026-10-14 20:25:00", "2026-10-14 20:30:00", "2026-10-14 20:35:00", "2026-10-14 20:40:00", "2026-10-14 20:45:00", "2026-10-14 20:50:00", "2026-10-14 20:55:00", "2026-10-14 21:00:00", "2026-10-14 21:05:00", "2026-10-14 21:10:00", "2026-10-14 21:15:00", "2026-10-14 21:20:00", "2026-10-14 21:25:00", "2026-10-14 21:30:00", "2026-10-14 21:35:00", "2026-10-14 21:40:00", "2026-10-14 21:45:00", "2026-10-14 21:50:00", "2026-10-14 21:55:00"], "cgm_glucose": [137.7, 137.9, 137.7, 140.7, 140.1, 137.7, 136.9, 135.3, 137.0, 138.6, 137.3, 138.9, 145.9, 146.9, 145.0, 144.9, 145.8, 145.8, 146.4, 145.6, 144.3, 141.9, 143.1, 142.0, 137.4, 134.6, 134.7, 131.5, 129.0, 124.9, 125.6, 119.8, 117.0, 113.4, 110.5, 110.7, 106.7, 106.4, 104.6, 103.8, 103.8, 103.7, 102.3, 100.5, 99.4, 99.6, 99.2, 97.1, 95.3, 96.9, 100.2, 103.5, 103.1, 102.2, 105.3, 103.7, 102.8, 105.7, 108.7, 109.1, 138.9, 136.9, 136.0, 136.6, 135.5, 134.4, 137.7, 138.0, 135.9, 134.7, 134.8, 133.2], "heart_rate": [78.4, 79.3, 79.4, 78.5, 78.3, 77.1, 75.7, 74.4, 71.5, 73.5, 75.5, 76.4, 78.4, 79.3, 78.0, 78.8, 76.1, 75.3, 74.9, 76.3, 77.3, 75.2, 75.5, 74.3, 82.0, 85.7, 88.9, 92.9, 96.3, 99.0, 99.7, 99.3, 102.5, 104.4, 106.6, 110.1, 112.5, 111.8, 113.7, 114.5, 114.0, 114.1, 110.1, 106.2, 102.0, 99.3, 93.8, 91.8, 90.3, 87.6, 83.5, 83.0, 81.5, 82.7, 83.0, 82.4, 82.2, 80.2, 80.2, 81.4, 81.1, 78.6, 78.4, 75.6, 75.8, 76.3, 76.2, 77.3, 76.6, 76.3, 77.1, 75.4], "hrv_rmssd": [41.0, 43.0, 38.9, 38.4, 36.9, 37.5, 36.6, 34.6, 35.6, 37.6, 36.8, 35.7, 36.7, 37.5, 35.3, 34.6, 35.0, 33.7, 33.0, 33.1, 34.7, 33.5, 33.2, 32.9, 32.9, 31.4, 28.4, 28.5, 29.2, 28.4, 30.5, 32.2, 32.3, 32.3, 32.6, 31.7, 31.5, 31.5, 32.5, 32.3, 33.3, 33.3, 32.9, 31.0, 34.3, 30.9, 32.7, 32.7, 36.4, 35.4, 31.8, 32.0, 32.3, 32.9, 32.2, 31.8, 33.5, 31.8, 32.9, 32.4, 30.6, 28.1, 30.4, 31.0, 31.0, 31.0, 31.5, 32.1, 30.9, 31.3, 31.0, 33.1], "steps": [31, 27, 23, 21, 26, 27, 18, 33, 25, 23, 37, 27, 15, 10, 24, 28, 15, 24, 30, 17, 21, 28, 30, 22, 189, 168, 163, 188, 177, 177, 167, 179, 193, 166, 183, 163, 200, 179, 202, 194, 189, 175, 24, 23, 26, 26, 28, 30, 30, 21, 35, 35, 26, 20, 27, 23, 23, 22, 25, 29, 28, 26, 22, 19, 23, 29, 26, 31, 31, 13, 21, 26], "meal_carbs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 32.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 110.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "forecast": {"points": [133.5, 133.8, 134.1, 134.4, 134.7, 135.0, 135.4, 135.7, 136.0, 136.3, 136.6, 136.9, 137.2, 137.5, 137.8, 138.1, 138.4, 138.8, 139.1, 139.4, 139.7, 140.0, 140.3, 140.6], "upper_bound": [139.3, 142.0, 144.1, 146.0, 147.7, 149.2, 150.7, 152.1, 153.4, 154.6, 155.8, 157.0, 158.1, 159.2, 160.3, 161.3, 162.3, 163.4, 164.4, 165.3, 166.3, 167.2, 168.1, 169.0], "lower_bound": [127.7, 125.6, 124.1, 122.8, 121.7, 120.8, 120.1, 119.3, 118.6, 118.0, 117.4, 116.8, 116.3, 115.8, 115.3, 114.9, 114.5, 114.2, 113.8, 113.5, 113.1, 112.8, 112.5, 112.2], "horizon_minutes": 120}}, "IND-PT-10012": {"ehr": {"patient_id": "IND-PT-10012", "age": 54, "gender": "Male", "bmi": 30.5, "waist_hip_ratio": 0.91, "diabetes_duration_years": 1.2, "hba1c_pct": 8.4, "fasting_glucose_mg_dl": 200.1, "egfr_ml_min": 77.1, "serum_creatinine_mg_dl": 1.42, "triglycerides_mg_dl": 89.8, "hdl_mg_dl": 27.3, "ldl_mg_dl": 103.4, "hypertension": 0, "diabetic_retinopathy": 0, "diabetic_neuropathy": 0, "cvd_history": 0, "tcf7l2_risk_allele_count": 1, "daily_metformin_mg": 1500, "daily_sglt2i_mg": 10, "daily_dpp4i_mg": 20, "daily_sulfonylurea_mg": 0, "insulin_user": 0, "basal_insulin_units": 0, "medication_regimen": "Metformin + SGLT2i + DPP4i", "dietary_pattern": "Wheat/Roti Staple (North/West)"}, "twin_status": {"predicted_glucose_2h": 189.8, "predicted_event_code": 1, "predicted_event_name": "Impending Hyperglycemia Spike (>200 mg/dL)", "risk_level": "HIGH", "probabilities": {"in_range": 0.238, "hyper_spike": 0.747, "hypoglycemia": 0.014}, "clinical_explanations": ["Significant recent carbohydrate ingestion (89g) driving rapid postprandial absorption."]}, "telemetry": {"timestamps": ["2026-10-14 16:00:00", "2026-10-14 16:05:00", "2026-10-14 16:10:00", "2026-10-14 16:15:00", "2026-10-14 16:20:00", "2026-10-14 16:25:00", "2026-10-14 16:30:00", "2026-10-14 16:35:00", "2026-10-14 16:40:00", "2026-10-14 16:45:00", "2026-10-14 16:50:00", "2026-10-14 16:55:00", "2026-10-14 17:00:00", "2026-10-14 17:05:00", "2026-10-14 17:10:00", "2026-10-14 17:15:00", "2026-10-14 17:20:00", "2026-10-14 17:25:00", "2026-10-14 17:30:00", "2026-10-14 17:35:00", "2026-10-14 17:40:00", "2026-10-14 17:45:00", "2026-10-14 17:50:00", "2026-10-14 17:55:00", "2026-10-14 18:00:00", "2026-10-14 18:05:00", "2026-10-14 18:10:00", "2026-10-14 18:15:00", "2026-10-14 18:20:00", "2026-10-14 18:25:00", "2026-10-14 18:30:00", "2026-10-14 18:35:00", "2026-10-14 18:40:00", "2026-10-14 18:45:00", "2026-10-14 18:50:00", "2026-10-14 18:55:00", "2026-10-14 19:00:00", "2026-10-14 19:05:00", "2026-10-14 19:10:00", "2026-10-14 19:15:00", "2026-10-14 19:20:00", "2026-10-14 19:25:00", "2026-10-14 19:30:00", "2026-10-14 19:35:00", "2026-10-14 19:40:00", "2026-10-14 19:45:00", "2026-10-14 19:50:00", "2026-10-14 19:55:00", "2026-10-14 20:00:00", "2026-10-14 20:05:00", "2026-10-14 20:10:00", "2026-10-14 20:15:00", "2026-10-14 20:20:00", "2026-10-14 20:25:00", "2026-10-14 20:30:00", "2026-10-14 20:35:00", "2026-10-14 20:40:00", "2026-10-14 20:45:00", "2026-10-14 20:50:00", "2026-10-14 20:55:00", "2026-10-14 21:00:00", "2026-10-14 21:05:00", "2026-10-14 21:10:00", "2026-10-14 21:15:00", "2026-10-14 21:20:00", "2026-10-14 21:25:00", "2026-10-14 21:30:00", "2026-10-14 21:35:00", "2026-10-14 21:40:00", "2026-10-14 21:45:00", "2026-10-14 21:50:00", "2026-10-14 21:55:00"], "cgm_glucose": [203.4, 205.1, 203.5, 205.0, 201.3, 200.7, 201.9, 199.2, 200.1, 202.6, 202.3, 202.2, 198.6, 196.6, 196.1, 195.7, 194.0, 192.5, 192.2, 192.2, 193.1, 191.1, 190.5, 189.3, 182.6, 184.9, 184.6, 182.9, 176.7, 174.3, 171.1, 167.0, 164.3, 159.7, 156.1, 153.3, 151.0, 154.0, 153.7, 150.5, 147.2, 147.5, 147.5, 146.2, 148.7, 150.2, 150.0, 151.9, 153.5, 155.2, 155.8, 157.4, 155.5, 158.1, 161.1, 162.9, 161.2, 160.7, 164.6, 163.8, 192.2, 190.0, 188.2, 189.8, 191.9, 191.5, 190.9, 190.4, 188.0, 191.8, 193.1, 193.2], "heart_rate": [77.7, 77.6, 79.1, 77.7, 74.2, 73.3, 71.9, 73.6, 74.7, 74.6, 74.3, 75.2, 73.9, 74.6, 76.4, 76.3, 77.5, 77.5, 78.1, 78.6, 78.2, 80.3, 79.2, 80.1, 85.9, 91.5, 94.7, 96.9, 99.5, 101.8, 104.6, 105.8, 107.4, 107.9, 107.1, 106.1, 106.2, 107.7, 110.5, 110.6, 114.5, 111.0, 106.1, 100.7, 98.3, 94.4, 92.1, 89.6, 90.3, 86.8, 85.4, 85.8, 85.2, 83.3, 82.6, 82.9, 81.2, 80.4, 79.0, 79.3, 78.0, 78.2, 77.9, 77.2, 78.3, 80.3, 81.0, 80.6, 80.4, 78.5, 74.4, 76.1], "hrv_rmssd": [36.3, 38.2, 35.5, 33.1, 32.9, 33.3, 33.8, 36.3, 37.5, 38.0, 37.6, 37.5, 36.1, 38.1, 38.4, 39.1, 38.9, 39.7, 39.8, 37.0, 36.9, 36.5, 36.8, 35.2, 34.1, 35.6, 36.9, 35.1, 38.1, 36.2, 37.8, 35.6, 36.9, 38.2, 36.8, 37.4, 40.7, 38.5, 38.2, 38.7, 39.4, 39.2, 42.2, 43.4, 43.6, 44.0, 43.8, 43.5, 40.4, 41.0, 40.8, 40.7, 41.2, 41.6, 39.1, 41.2, 44.6, 39.4, 38.1, 36.7, 36.2, 36.6, 35.3, 36.5, 35.3, 35.2, 33.6, 34.3, 34.8, 35.5, 34.8, 32.8], "steps": [36, 32, 32, 24, 40, 35, 26, 19, 27, 25, 29, 23, 27, 37, 23, 12, 28, 25, 27, 23, 17, 12, 26, 32, 178, 183, 158, 173, 186, 168, 170, 167, 173, 172, 181, 176, 190, 164, 184, 155, 191, 151, 27, 35, 24, 23, 18, 25, 25, 25, 34, 30, 21, 19, 28, 28, 23, 18, 20, 26, 28, 31, 27, 28, 24, 25, 22, 27, 29, 18, 30, 25], "meal_carbs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 88.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "forecast": {"points": [193.1, 192.9, 192.8, 192.6, 192.5, 192.4, 192.2, 192.1, 191.9, 191.8, 191.6, 191.5, 191.4, 191.2, 191.1, 190.9, 190.8, 190.6, 190.5, 190.4, 190.2, 190.1, 189.9, 189.8], "upper_bound": [198.9, 201.1, 202.8, 204.2, 205.5, 206.6, 207.5, 208.5, 209.3, 210.1, 210.8, 211.6, 212.3, 212.9, 213.6, 214.1, 214.7, 215.2, 215.8, 216.3, 216.8, 217.3, 217.7, 218.2], "lower_bound": [187.3, 184.7, 182.8, 181.0, 179.5, 178.2, 176.9, 175.7, 174.5, 173.5, 172.4, 171.4, 170.5, 169.5, 168.6, 167.7, 166.9, 166.0, 165.2, 164.5, 163.6, 162.9, 162.1, 161.4], "horizon_minutes": 120}}};
+
+
+    async function loadPatient(patientId) {
+      let data = null;
+      try {
+        const res = await fetch('/api/patient/' + patientId);
+        if (res && res.ok) {
+          data = await res.json();
+        }
+      } catch (e) {
+        console.log('Using embedded static patient data for GitHub Pages');
+      }
+      if (!data && EMBEDDED_PATIENTS[patientId]) {
+        data = JSON.parse(JSON.stringify(EMBEDDED_PATIENTS[patientId]));
+      }
+      if (!data) return;
+
+      try {
+        currentPatientData = data;
+
+        // Reset simulation UI
+        document.getElementById('simOutcomeBox').classList.add('hidden');
+        document.getElementById('simLegend').style.display = 'none';
+        walkSlider.value = 0; walkVal.innerText = "0 mins";
+        carbSlider.value = 0; carbVal.innerText = "0 g";
+        insulinSlider.value = 0; insulinVal.innerText = "0 U";
+
+        // Update EHR Info
+        const ehr = data.ehr;
+        document.getElementById('ptDemo').innerText = `${ehr.age}y ${ehr.gender} (T2D ${ehr.diabetes_duration_years}y)`;
+        document.getElementById('ptBmi').innerText = `${ehr.bmi} kg/m² (WHR: ${ehr.waist_hip_ratio})`;
+        document.getElementById('ptHbA1c').innerText = `${ehr.hba1c_pct}% (${ehr.fasting_glucose_mg_dl} mg/dL FBG)`;
+        document.getElementById('ptEgfr').innerText = `${ehr.egfr_ml_min} mL/min (Cr: ${ehr.serum_creatinine_mg_dl})`;
+        document.getElementById('ptMeds').innerText = ehr.medication_regimen;
+        document.getElementById('ptDiet').innerText = ehr.dietary_pattern;
+
+        // Update Status & Metrics
+        const twin = data.twin_status;
+        const lastCgm = data.telemetry.cgm_glucose[data.telemetry.cgm_glucose.length - 1];
+        const prevCgm = data.telemetry.cgm_glucose[data.telemetry.cgm_glucose.length - 4];
+        const velocity = ((lastCgm - prevCgm) / 15.0).toFixed(2);
+
+        document.getElementById('metricCurrentG').innerText = `${lastCgm} mg/dL`;
+        document.getElementById('metricGVelocity').innerText = `Velocity: ${velocity > 0 ? '+' : ''}${velocity} mg/dL/min`;
+        document.getElementById('metricPredG').innerText = `${twin.predicted_glucose_2h} mg/dL`;
+
+        const lastHr = data.telemetry.heart_rate[data.telemetry.heart_rate.length - 1];
+        const lastHrv = data.telemetry.hrv_rmssd[data.telemetry.hrv_rmssd.length - 1];
+        const autonomic = (lastHr / lastHrv).toFixed(2);
+        document.getElementById('metricAutonomic').innerText = autonomic;
+
+        // Time in range calculation
+        const inRangeCount = data.telemetry.cgm_glucose.filter(v => v >= 70 && v <= 180).length;
+        const tirPct = ((inRangeCount / data.telemetry.cgm_glucose.length) * 100).toFixed(0);
+        document.getElementById('metricTIR').innerText = `${tirPct}%`;
+
+        // Update Risk Badge
+        const riskBadge = document.getElementById('riskBadge');
+        const riskText = document.getElementById('riskText');
+        const explanationBox = document.getElementById('explanationBox');
+        const alertHeadline = document.getElementById('alertHeadline');
+        const alertBody = document.getElementById('alertBody');
+
+        riskBadge.className = 'px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center space-x-2 ';
+        if (twin.predicted_event_code === 2) {
+          riskBadge.className += 'bg-red-500/20 text-red-400 border border-red-500/40 pulse-red';
+          riskText.innerText = 'CRITICAL: Nocturnal Hypoglycemia Alert';
+          explanationBox.className = 'p-3.5 rounded-xl border border-red-500/40 bg-red-950/30 text-red-300 text-xs flex items-start space-x-3';
+          alertHeadline.innerText = 'Severe Hypoglycemia Warning (<70 mg/dL):';
+        } else if (twin.predicted_event_code === 1) {
+          riskBadge.className += 'bg-amber-500/20 text-amber-400 border border-amber-500/40 pulse-amber';
+          riskText.innerText = 'WARNING: Hyperglycemic Spike Alert';
+          explanationBox.className = 'p-3.5 rounded-xl border border-amber-500/40 bg-amber-950/30 text-amber-300 text-xs flex items-start space-x-3';
+          alertHeadline.innerText = 'Postprandial Hyperglycemia Warning (>200 mg/dL):';
+        } else {
+          riskBadge.className += 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 pulse-green';
+          riskText.innerText = 'STABLE: Glycemic Homeostasis In-Range';
+          explanationBox.className = 'p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-950/30 text-emerald-300 text-xs flex items-start space-x-3';
+          alertHeadline.innerText = 'Physiological Twin Controlled (70-180 mg/dL):';
+        }
+        alertBody.innerText = twin.clinical_explanations.join(' ');
+
+        // Render Charts
+        renderMainCgmChart(data);
+        renderWearablesChart(data);
+
+      } catch (err) {
+        console.error("Failed to load patient twin:", err);
+      }
+    }
+
+    // Main CGM Chart Rendering
+    function renderMainCgmChart(data, simulatedCurve = null) {
+      const ctx = document.getElementById('cgmChart').getContext('2d');
+      const telem = data.telemetry;
+      const forecast = data.forecast;
+
+      // Labels: past timestamps + future 24 steps
+      const pastLabels = telem.timestamps.map(t => t.split(' ')[1].slice(0, 5));
+      const futureLabels = Array.from({length: 24}, (_, i) => `+${(i+1)*5}m`);
+      const allLabels = [...pastLabels, ...futureLabels];
+
+      // Observed CGM: values for past, nulls for future
+      const observedData = [...telem.cgm_glucose, ...Array(24).fill(null)];
+
+      // 2h Forecast: nulls for past, connected at last point
+      const forecastData = Array(telem.cgm_glucose.length - 1).fill(null);
+      forecastData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+      forecastData.push(...forecast.points);
+
+      // Upper & Lower bounds
+      const upperData = Array(telem.cgm_glucose.length - 1).fill(null);
+      upperData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+      upperData.push(...forecast.upper_bound);
+
+      const lowerData = Array(telem.cgm_glucose.length - 1).fill(null);
+      lowerData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+      lowerData.push(...forecast.lower_bound);
+
+      const datasets = [
+        {
+          label: 'Observed CGM (mg/dL)',
+          data: observedData,
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.08)',
+          borderWidth: 2.5,
+          pointRadius: 1,
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: '2-Hour Forecast',
+          data: forecastData,
+          borderColor: '#818cf8',
+          borderWidth: 2.5,
+          borderDash: [5, 4],
+          pointRadius: 2,
+          pointBackgroundColor: '#818cf8',
+          tension: 0.3,
+          fill: false
+        },
+        {
+          label: '95% Confidence Upper',
+          data: upperData,
+          borderColor: 'rgba(129, 140, 248, 0.25)',
+          borderWidth: 1,
+          borderDash: [2, 2],
+          pointRadius: 0,
+          fill: false
+        },
+        {
+          label: '95% Confidence Lower',
+          data: lowerData,
+          borderColor: 'rgba(129, 140, 248, 0.25)',
+          backgroundColor: 'rgba(129, 140, 248, 0.1)',
+          borderWidth: 1,
+          borderDash: [2, 2],
+          pointRadius: 0,
+          fill: '-1' // Fill between upper and lower
+        }
+      ];
+
+      // If simulation is active, append simulated trajectory
+      if (simulatedCurve) {
+        const simData = Array(telem.cgm_glucose.length - 1).fill(null);
+        simData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+        simData.push(...simulatedCurve);
+
+        datasets.push({
+          label: 'Simulated In-Silico Intervention',
+          data: simData,
+          borderColor: '#fbbf24',
+          borderWidth: 3,
+          borderDash: [6, 4],
+          pointRadius: 3,
+          pointBackgroundColor: '#fbbf24',
+          tension: 0.3,
+          fill: false
+        });
+      }
+
+      if (cgmChartInstance) cgmChartInstance.destroy();
+
+      cgmChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: allLabels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleColor: '#e2e8f0',
+              bodyColor: '#94a3b8',
+              borderColor: '#334155',
+              borderWidth: 1
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#64748b', maxTicksLimit: 14 }
+            },
+            y: {
+              min: 40,
+              max: 300,
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#64748b' }
+            }
+          }
+        }
+      });
+    }
+
+    // Secondary Wearables Chart
+    function renderWearablesChart(data) {
+      const ctx = document.getElementById('wearablesChart').getContext('2d');
+      const telem = data.telemetry;
+      const labels = telem.timestamps.map(t => t.split(' ')[1].slice(0, 5));
+
+      if (wearablesChartInstance) wearablesChartInstance.destroy();
+
+      wearablesChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Heart Rate (bpm)',
+              data: telem.heart_rate,
+              borderColor: '#f43f5e',
+              borderWidth: 1.5,
+              pointRadius: 0,
+              tension: 0.2,
+              yAxisID: 'y'
+            },
+            {
+              label: 'HRV RMSSD (ms)',
+              data: telem.hrv_rmssd,
+              borderColor: '#a855f7',
+              borderWidth: 1.5,
+              pointRadius: 0,
+              tension: 0.2,
+              yAxisID: 'y'
+            },
+            {
+              type: 'bar',
+              label: 'Steps (5-min)',
+              data: telem.steps,
+              backgroundColor: 'rgba(56, 189, 248, 0.35)',
+              yAxisID: 'ySteps'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { color: '#94a3b8', boxWidth: 10, font: { size: 10 } }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#64748b', maxTicksLimit: 12 }
+            },
+            y: {
+              min: 30,
+              max: 130,
+              grid: { color: 'rgba(255, 255, 255, 0.04)' },
+              ticks: { color: '#64748b', font: { size: 10 } }
+            },
+            ySteps: {
+              position: 'right',
+              min: 0,
+              max: 400,
+              grid: { display: false },
+              ticks: { color: '#64748b', font: { size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    // Run In-Silico Counterfactual Simulation
+    document.getElementById('runSimBtn').addEventListener('click', async () => {
+      try {
+        const patientId = document.getElementById('patientSelect').value;
+        const walk = parseInt(walkSlider.value);
+        const carbs = parseInt(carbSlider.value);
+        const insulin = parseInt(insulinSlider.value);
+
+        let sim = null;
+        try {
+          const res = await fetch('/api/simulate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              patient_id: patientId,
+              walk_minutes: walk,
+              carb_reduction_grams: carbs,
+              insulin_adjustment_units: insulin
+            })
+          });
+          if (res && res.ok) sim = await res.json();
+        } catch (e) {
+          console.log('Using client-side simulation engine on GitHub Pages');
+        }
+
+        if (!sim && currentPatientData) {
+          // Client-side in-silico simulation fallback for GitHub Pages
+          const baseG = currentPatientData.twin_status.predicted_glucose_2h;
+          // Walking reduces glucose via GLUT-4 (approx 1.2 mg/dL per 5 mins)
+          const walkDelta = -(walk / 5.0) * 4.2;
+          // Carb reduction blunts absorption surge (approx 0.65 mg/dL per gram)
+          const carbDelta = -carbs * 0.72;
+          // Insulin titration
+          const insDelta = -insulin * 8.5;
+          const totalDelta = Math.round((walkDelta + carbDelta + insDelta) * 10) / 10;
+          const newG = Math.max(55.0, Math.round((baseG + totalDelta) * 10) / 10);
+          
+          const lastC = currentPatientData.telemetry.cgm_glucose[currentPatientData.telemetry.cgm_glucose.length - 1];
+          const simCurve = [];
+          for (let i = 1; i <= 24; i++) {
+            simCurve.push(Math.round((lastC + (newG - lastC) * (i / 24.0)) * 10) / 10);
+          }
+          
+          sim = {
+            baseline: currentPatientData.twin_status,
+            simulated: { predicted_glucose_2h: newG },
+            delta_glucose_mg_dl: totalDelta,
+            simulated_forecast_curve: simCurve,
+            clinical_recommendation: newG <= 180 && baseG > 200 
+              ? 'Intervention successfully mitigated hyperglycemic spike into target range (70-180 mg/dL).'
+              : (newG >= 70 && baseG < 70 
+                  ? 'Intervention successfully prevented impending nocturnal hypoglycemia.'
+                  : 'Intervention modulated glycemic trajectory as projected.')
+          };
+        }
+          
+        if (sim) {
+          // Show outcome
+          document.getElementById('simOutcomeBox').classList.remove('hidden');
+          document.getElementById('simLegend').style.display = 'flex';
+          document.getElementById('simBaseVal').innerText = `${sim.baseline.predicted_glucose_2h} mg/dL`;
+          document.getElementById('simNewVal').innerText = `${sim.simulated.predicted_glucose_2h} mg/dL`;
+          
+          const delta = sim.delta_glucose_mg_dl;
+          document.getElementById('simDeltaVal').innerText = `${delta > 0 ? '+' : ''}${delta} mg/dL`;
+          document.getElementById('simRecommendation').innerText = sim.clinical_recommendation;
+
+          // Overlay simulated curve on chart
+          renderMainCgmChart(currentPatientData, sim.simulated_forecast_curve);
+        }
+
+      } catch (err) {
+        console.error("Simulation error:", err);
+      }
+    });
+
+    // Patient Dropdown Event Listener
+    document.getElementById('patientSelect').addEventListener('change', (e) => {
+      loadPatient(e.target.value);
+    });
+
+    // Modal Open/Close Event Listeners
+    const enrollModal = document.getElementById('enrollModal');
+    document.getElementById('openEnrollModalBtn').addEventListener('click', () => {
+      enrollModal.classList.remove('hidden');
+    });
+    document.getElementById('closeEnrollModalBtn').addEventListener('click', () => {
+      enrollModal.classList.add('hidden');
+    });
+    document.getElementById('cancelEnrollBtn').addEventListener('click', () => {
+      enrollModal.classList.add('hidden');
+    });
+
+    // Handle New Patient Onboarding Form
+    document.getElementById('enrollPatientForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('newPtName').value.trim();
+      const abha = document.getElementById('newPtAbha').value.trim() || '91-XXXX-XXXX';
+      const age = parseInt(document.getElementById('newPtAge').value);
+      const gender = document.getElementById('newPtGender').value;
+      const bmi = parseFloat(document.getElementById('newPtBmi').value);
+      const duration = parseFloat(document.getElementById('newPtDuration').value);
+      const hba1c = parseFloat(document.getElementById('newPtHba1c').value);
+      const fbg = parseFloat(document.getElementById('newPtFbg').value);
+      const egfr = parseFloat(document.getElementById('newPtEgfr').value);
+      const meds = document.getElementById('newPtMeds').value;
+      const diet = document.getElementById('newPtDiet').value;
+
+      const newId = `IND-PT-${10000 + Math.floor(Math.random() * 9000)}`;
+
+      // Generate synthetic 6-hour dynamic telemetry based on clinical baselines
+      const timestamps = [];
+      const cgm = [];
+      const hr = [];
+      const hrv = [];
+      const steps = [];
+      const carbs = [];
+
+      let currentG = fbg + (hba1c - 7.0) * 15;
+      const baseHr = 72 + (bmi > 25 ? 6 : 0);
+      const baseHrv = Math.max(22, 45 - (age * 0.25));
+
+      for (let i = 71; i >= 0; i--) {
+        const d = new Date(Date.now() - i * 5 * 60 * 1000);
+        timestamps.push(d.toTimeString().slice(0, 8));
+        
+        // Add physiological variability
+        const noise = (Math.random() - 0.48) * 3.5;
+        currentG = Math.max(70, Math.min(320, currentG + noise));
+        cgm.push(Math.round(currentG * 10) / 10);
+        
+        hr.push(Math.round((baseHr + (Math.random() - 0.5) * 8) * 10) / 10);
+        hrv.push(Math.round((baseHrv + (Math.random() - 0.5) * 6) * 10) / 10);
+        steps.push(i > 20 && i < 35 ? Math.floor(120 + Math.random() * 80) : Math.floor(15 + Math.random() * 20));
+        carbs.push(i === 12 ? (diet.includes('Rice') ? 75.0 : 55.0) : 0.0);
+      }
+
+      // Predicted 2h future and clinical risk
+      const carbSurge = carbs.reduce((a, b) => a + b, 0);
+      const predG = Math.round((currentG + (carbSurge * 0.65) + (hba1c > 8.5 ? 22 : -10)) * 10) / 10;
+      const eventCode = predG > 200 ? 1 : (predG < 70 ? 2 : 0);
+      const eventName = eventCode === 1 ? 'Impending Hyperglycemia Spike (>200 mg/dL)' : (eventCode === 2 ? 'Impending Nocturnal Hypoglycemia (<70 mg/dL)' : 'In-Range / Stable');
+
+      // Forecast points
+      const forecastPoints = [];
+      const upper = [];
+      const lower = [];
+      for (let step = 1; step <= 24; step++) {
+        const p = Math.round((currentG + (predG - currentG) * (step / 24.0)) * 10) / 10;
+        forecastPoints.push(p);
+        upper.push(Math.round((p + 6 + step * 0.4) * 10) / 10);
+        lower.push(Math.round((p - 6 - step * 0.4) * 10) / 10);
+      }
+
+      const newTwinData = {
+        ehr: {
+          patient_id: newId,
+          name: name,
+          abha_id: abha,
+          age: age,
+          gender: gender,
+          bmi: bmi,
+          waist_hip_ratio: 0.91,
+          diabetes_duration_years: duration,
+          hba1c_pct: hba1c,
+          fasting_glucose_mg_dl: fbg,
+          egfr_ml_min: egfr,
+          serum_creatinine_mg_dl: 1.15,
+          triglycerides_mg_dl: 165.0,
+          hdl_mg_dl: 39.0,
+          ldl_mg_dl: 98.0,
+          hypertension: 1,
+          diabetic_retinopathy: 0,
+          diabetic_neuropathy: 0,
+          cvd_history: 0,
+          tcf7l2_risk_allele_count: 1,
+          daily_metformin_mg: 1500,
+          daily_sglt2i_mg: 0,
+          daily_dpp4i_mg: 0,
+          daily_sulfonylurea_mg: 0,
+          insulin_user: meds.includes('Insulin') ? 1 : 0,
+          basal_insulin_units: meds.includes('Insulin') ? 15 : 0,
+          medication_regimen: meds,
+          dietary_pattern: diet
+        },
+        twin_status: {
+          predicted_glucose_2h: predG,
+          predicted_event_code: eventCode,
+          predicted_event_name: eventName,
+          risk_level: eventCode === 1 ? 'HIGH' : (eventCode === 2 ? 'CRITICAL' : 'LOW'),
+          probabilities: {
+            in_range: eventCode === 0 ? 0.92 : 0.15,
+            hyper_spike: eventCode === 1 ? 0.82 : 0.05,
+            hypoglycemia: eventCode === 2 ? 0.85 : 0.03
+          },
+          clinical_explanations: [
+            `EHR Baseline: HbA1c ${hba1c}% with ${diet} dietary pattern.`,
+            `Dynamic IoT Stream: Interstitial velocity from CGM indicates ${predG > 200 ? 'rapid postprandial glucose surge' : 'homeostatic metabolic clearance'}.`
+          ]
+        },
+        telemetry: {
+          timestamps: timestamps,
+          cgm_glucose: cgm,
+          heart_rate: hr,
+          hrv_rmssd: hrv,
+          steps: steps,
+          meal_carbs: carbs
+        },
+        forecast: {
+          points: forecastPoints,
+          upper_bound: upper,
+          lower_bound: lower,
+          horizon_minutes: 120
+        }
+      };
+
+      // Add to static registry
+      EMBEDDED_PATIENTS[newId] = newTwinData;
+
+      // Add to UI select dropdown
+      const opt = document.createElement('option');
+      opt.value = newId;
+      opt.innerText = `${newId} - ${name} (${meds})`;
+      const select = document.getElementById('patientSelect');
+      select.prepend(opt);
+      select.value = newId;
+
+      // Close modal and load
+      enrollModal.classList.add('hidden');
+      loadPatient(newId);
+
+      alert(`✅ Patient Digital Twin Created!\n\nPatient: ${name} (${newId})\nABHA ID: ${abha}\nFusing 2 Data Streams: Clinical EHR + IoT Wearables`);
+    });
+
+    // Initial Load
+    window.addEventListener('DOMContentLoaded', () => {
+      const defaultPid = document.getElementById('patientSelect').value;
+      loadPatient(defaultPid);
+    });
+
+    /* ====================================================================
+       AI GUIDED VIDEO PRESENTATION & TELEPROMPTER ENGINE
+       ==================================================================== */
+    const tourSteps = [
+      {
+        step: 1,
+        title: "Welcome & Clinical Mission in India",
+        subtitle: "Happiest Health Summit 2026 • Type 2 Diabetes Digital Twin",
+        text: "Welcome members of the jury and clinical experts. India faces a catastrophic diabetes crisis with over 101 million patients. Traditional clinical care is reactive—relying on quarterly HbA1c tests. Today, we demonstrate GlycoTwin-AI: a dynamic multimodal Digital Twin predicting adverse glycemic events 2 hours in advance.",
+        target: "header",
+        action: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        duration: 12
+      },
+      {
+        step: 2,
+        title: "Dual Data Stream Ingestion (EHR + Wearables)",
+        subtitle: "DPDP Act 2023 & HIPAA Compliant Data Fusion",
+        text: "Our architecture fuses two distinct temporal streams: Static Historical EHR (Asian Indian BMI >= 23, baseline HbA1c, renal eGFR, lipid dyslipidemia, and genetics) paired with Dynamic IoT Telemetry (5-minute CGM interstitial glucose, Heart Rate, HRV RMSSD, step cadence, and Indian meal carbs).",
+        target: "ptDemo",
+        action: () => {
+          document.getElementById('patientSelect').value = 'IND-PT-10007';
+          loadPatient('IND-PT-10007');
+          document.getElementById('ptDemo').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 13
+      },
+      {
+        step: 3,
+        title: "Patient Focus: IND-PT-10007 (High Postprandial Spikes)",
+        subtitle: "54-Year-Old Indian Male with High-Carbohydrate Rice Staple Diet",
+        text: "Notice Patient IND-PT-10007: Baseline HbA1c is 9.4% with 9 years of diabetes. Current glucose is 185 mg/dL. The Digital Twin calculates a steep positive glycemic velocity (+1.4 mg/dL/min) driven by recent Indian carbohydrate intake.",
+        target: "metricCurrentG",
+        action: () => {
+          document.getElementById('metricCurrentG').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 12
+      },
+      {
+        step: 4,
+        title: "2-Hour Ahead Predictive Early Warning",
+        subtitle: "Triage Alert: Impending Hyperglycemia Spike (>200 mg/dL)",
+        text: "Look at the main chart: The solid line shows observed CGM over the last 6 hours. The dashed purple curve projects the 2-hour ahead forecast with its 95% confidence band. The twin flags an impending spike to 218 mg/dL—triggering a WARNING AMBER alert.",
+        target: "cgmChart",
+        action: () => {
+          document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 13
+      },
+      {
+        step: 5,
+        title: "Physician 'What-If' Counterfactual Simulation",
+        subtitle: "Testing Personalized Interventions In-Silico Before Clinical Execution",
+        text: "Doctors cannot conduct risky trial-and-error experiments on real patients. Using our in-silico simulation engine, we test two non-pharmacological interventions: a 20-minute post-meal brisk walk and a 35g carb reduction (swapping polished white rice for foxtail millet).",
+        target: "walkSlider",
+        action: () => {
+          document.getElementById('walkSlider').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          walkSlider.value = 20; walkVal.innerText = "20 mins";
+          carbSlider.value = 35; carbVal.innerText = "35 g";
+        },
+        duration: 13
+      },
+      {
+        step: 6,
+        title: "Simulated Intervention Outcome: Spike Mitigated",
+        subtitle: "Predicted Glucose Drops by -38 mg/dL into Safe Range (180 mg/dL)",
+        text: "We click Run In-Silico Simulation. Notice the dashed orange curve rendering instantaneously on the chart! The simulated 2-hour glucose plummets from 218 mg/dL down to 180 mg/dL—successfully bringing the patient within target physiological boundaries (70-180 mg/dL).",
+        target: "simOutcomeBox",
+        action: () => {
+          document.getElementById('runSimBtn').click();
+          setTimeout(() => {
+            document.getElementById('simOutcomeBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        },
+        duration: 14
+      },
+      {
+        step: 7,
+        title: "Critical Scenario: Nocturnal Hypoglycemia Alert",
+        subtitle: "Patient IND-PT-10004: Nighttime Crash Flagged via Autonomic Telemetry",
+        text: "Now switching to Patient IND-PT-10004. At 02:30 AM, current glucose is 92 mg/dL. But look at the wearable telemetry: HRV RMSSD has collapsed to 14ms (sympathetic counter-regulatory surge). The Digital Twin triggers a CRITICAL RED ALERT: impending nocturnal hypo to 61 mg/dL at 04:30 AM!",
+        target: "riskBadge",
+        action: () => {
+          document.getElementById('patientSelect').value = 'IND-PT-10004';
+          loadPatient('IND-PT-10004');
+          setTimeout(() => {
+            document.getElementById('riskBadge').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 200);
+        },
+        duration: 14
+      },
+      {
+        step: 8,
+        title: "Clinical Metrics & Rigorous Validation",
+        subtitle: "MARD: 7.15% (Gold Standard < 10%) | RMSE: 14.50 mg/dL",
+        text: "Evaluated on unseen patient holdouts across 59,940 continuous telemetry points: GlycoTwin-AI achieves a clinical-grade MARD of 7.15% and RMSE of 14.50 mg/dL, with 65.31% precision on adverse spikes and a 120-minute lead time.",
+        target: "cgmChart",
+        action: () => {
+          document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        duration: 13
+      },
+      {
+        step: 9,
+        title: "DPDP Act 2023 Compliance & Data Governance",
+        subtitle: "100% Synthetic Patient Data • Zero PII • Audit Trail",
+        text: "The system strictly complies with the Indian DPDP Act 2023 and HIPAA sandbox rules. Zero real patient PII is stored. Generative pipelines mimic authentic ICMR-INDIAB epidemiology with complete patient-level train/test separation.",
+        target: "header",
+        action: () => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        },
+        duration: 12
+      },
+      {
+        step: 10,
+        title: "The Vision: Proactive Digital Healthcare in India",
+        subtitle: "Happiest Health Summit 2026 • Reimagining and Reforming Care",
+        text: "GlycoTwin-AI transforms diabetes care from reactive crisis management to proactive in-silico prevention, saving families ₹40,000 to ₹1,50,000 in emergency hospitalizations and reducing microvascular complications by 37%. Our complete codebase and presentation are open-source on GitHub. Thank you.",
+        target: "header",
+        action: () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        duration: 14
+      }
+    ];
+
+    let currentTourIdx = 0;
+    let tourTimer = null;
+    let tourSecondsLeft = 0;
+    let isTourPaused = false;
+    let speechEnabled = true;
+
+    const tourBox = document.createElement('div');
+    tourBox.id = 'aiTourBox';
+    tourBox.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-4xl z-50 p-5 rounded-2xl bg-slate-900/95 border-2 border-indigo-500/70 shadow-2xl shadow-indigo-500/30 backdrop-blur-xl transition-all duration-300 text-slate-100 hidden';
+    tourBox.innerHTML = `
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <span class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-microphone-lines"></i>
+          </span>
+          <div>
+            <span class="text-[11px] font-mono uppercase tracking-wider text-indigo-400 font-bold" id="tourStepBadge">Step 1 of 10</span>
+            <h4 class="text-sm font-bold text-slate-100" id="tourTitle">Welcome</h4>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3 text-xs">
+          <!-- Voice Toggle -->
+          <label class="flex items-center space-x-1.5 cursor-pointer bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/60">
+            <input type="checkbox" id="tourVoiceToggle" checked class="accent-indigo-500 cursor-pointer">
+            <span class="text-slate-300 text-[11px]"><i class="fa-solid fa-volume-high text-sky-400 mr-1"></i>AI Voice</span>
+          </label>
+
+          <!-- Timer Badge -->
+          <span class="bg-indigo-950/80 text-indigo-300 px-2 py-1 rounded border border-indigo-500/30 font-mono text-[11px]" id="tourTimerDisplay">12s</span>
+
+          <!-- Close -->
+          <button id="tourCloseBtn" class="text-slate-400 hover:text-white p-1 text-base">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Subtitle Message Container -->
+      <div class="py-3">
+        <p class="text-xs text-indigo-300 font-medium mb-1" id="tourSubtitle">Subtitle</p>
+        <p class="text-sm text-slate-100 font-sans leading-relaxed tracking-wide bg-slate-950/40 p-3 rounded-xl border border-slate-800" id="tourText">
+          Narrative text appears here...
+        </p>
+      </div>
+
+      <!-- Controls & Progress -->
+      <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+        <div class="flex items-center space-x-2">
+          <button id="tourPrevBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Prev
+          </button>
+          <button id="tourPlayPauseBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            <i class="fa-solid fa-pause mr-1"></i> Pause
+          </button>
+          <button id="tourNextBtn" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-semibold text-white transition">
+            Next <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+
+        <div class="w-1/3 bg-slate-800 rounded-full h-1.5 overflow-hidden">
+          <div id="tourProgressBar" class="bg-gradient-to-r from-sky-400 to-indigo-500 h-1.5 transition-all duration-300" style="width: 10%;"></div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(tourBox);
+
+    // Speak helper using Web Speech API
+    function speakText(text) {
+      if (!speechEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel(); // Stop prior
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function renderTourStep(idx) {
+      if (idx < 0 || idx >= tourSteps.length) {
+        endTour();
+        return;
+      }
+      currentTourIdx = idx;
+      const cur = tourSteps[idx];
+
+      // Update text
+      document.getElementById('tourStepBadge').innerText = `Step ${cur.step} of ${tourSteps.length}`;
+      document.getElementById('tourTitle').innerText = cur.title;
+      document.getElementById('tourSubtitle').innerText = cur.subtitle;
+      document.getElementById('tourText').innerText = cur.text;
+      document.getElementById('tourProgressBar').style.width = `${((idx + 1) / tourSteps.length) * 100}%`;
+
+      // Trigger step actions
+      if (cur.action) cur.action();
+
+      // Trigger speech if enabled
+      speakText(`${cur.title}. ${cur.text}`);
+
+      // Set timer
+      clearInterval(tourTimer);
+      tourSecondsLeft = cur.duration;
+      document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+
+      tourTimer = setInterval(() => {
+        if (!isTourPaused) {
+          tourSecondsLeft--;
+          document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+          if (tourSecondsLeft <= 0) {
+            clearInterval(tourTimer);
+            renderTourStep(currentTourIdx + 1);
+          }
+        }
+      }, 1000);
+    }
+
+    function startTour() {
+      tourBox.classList.remove('hidden');
+      isTourPaused = false;
+      document.getElementById('tourPlayPauseBtn').innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause`;
+      renderTourStep(0);
+    }
+
+    function endTour() {
+      clearInterval(tourTimer);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      tourBox.classList.add('hidden');
+    }
+
+    // Event listeners
+    document.getElementById('startAiTourBtn').addEventListener('click', startTour);
+    document.getElementById('tourCloseBtn').addEventListener('click', endTour);
+
+    document.getElementById('tourNextBtn').addEventListener('click', () => {
+      renderTourStep(currentTourIdx + 1);
+    });
+
+    document.getElementById('tourPrevBtn').addEventListener('click', () => {
+      renderTourStep(Math.max(0, currentTourIdx - 1));
+    });
+
+    document.getElementById('tourPlayPauseBtn').addEventListener('click', () => {
+      isTourPaused = !isTourPaused;
+      const btn = document.getElementById('tourPlayPauseBtn');
+      if (isTourPaused) {
+        btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Resume`;
+        if ('speechSynthesis' in window) window.speechSynthesis.pause();
+      } else {
+        btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause`;
+        if ('speechSynthesis' in window) window.speechSynthesis.resume();
+      }
+    });
+
+    document.getElementById('tourVoiceToggle').addEventListener('change', (e) => {
+      speechEnabled = e.target.checked;
+      if (!speechEnabled && ('speechSynthesis' in window)) {
+        window.speechSynthesis.cancel();
+      } else if (speechEnabled) {
+        speakText(tourSteps[currentTourIdx].text);
+      }
+    });
+  </script>
+</body>
+</html>
