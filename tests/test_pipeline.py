@@ -2,8 +2,14 @@
 Unit and Integration Tests for GlycoTwin-AI Pipeline
 """
 
+import os
+import sys
 import unittest
 import pandas as pd
+
+# Ensure project root is in sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from models.digital_twin_engine import GlycoTwinEngine
 
 class TestGlycoTwinPipeline(unittest.TestCase):
