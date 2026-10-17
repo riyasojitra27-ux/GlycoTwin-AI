@@ -1,0 +1,232 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="cardGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="blueAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="purpleAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="greenAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <linearGradient id="amberAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Grid Overlay -->
+  <g stroke="rgba(255,255,255,0.03)" stroke-width="1">
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="600" x2="1200" y2="600"/>
+    <line x1="300" y1="0" x2="300" y2="800"/>
+    <line x1="600" y1="0" x2="600" y2="800"/>
+    <line x1="900" y1="0" x2="900" y2="800"/>
+  </g>
+
+  <!-- Title Header -->
+  <g transform="translate(60, 45)">
+    <text x="0" y="0" font-family="'Plus Jakarta Sans', sans-serif" font-size="24" font-weight="800" fill="#f8fafc" letter-spacing="-0.5">GlycoTwin-AI: End-to-End Multimodal Digital Twin Architecture</text>
+    <text x="0" y="24" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="500" fill="#94a3b8">Happiest Health Reimagining &amp; Reforming Healthcare Summit 2026 • Proactive Diabetes Prevention in India</text>
+  </g>
+
+  <!-- Pillar 1: Multimodal Ingestion (Static + Dynamic Streams) -->
+  <g transform="translate(50, 100)" filter="url(#shadow)">
+    <rect width="250" height="640" rx="14" fill="url(#cardGrad1)" stroke="rgba(56,189,248,0.2)" stroke-width="1.5"/>
+    <rect width="250" height="8" rx="4" fill="url(#blueAccent)"/>
+    
+    <text x="20" y="38" font-family="sans-serif" font-size="15" font-weight="700" fill="#38bdf8">1. DUAL DATA STREAMS</text>
+    <text x="20" y="56" font-family="sans-serif" font-size="11" fill="#64748b">DPDP Act 2023 &amp; HIPAA Sandbox</text>
+
+    <!-- Sub-Box 1A: Static EHR -->
+    <g transform="translate(15, 75)">
+      <rect width="220" height="240" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="14" y="26" font-family="sans-serif" font-size="12" font-weight="700" fill="#e2e8f0">Static / Historical EHR</text>
+      <text x="14" y="44" font-family="sans-serif" font-size="10" fill="#94a3b8">• Demographics (Age, Sex, WHR)</text>
+      <text x="14" y="64" font-family="sans-serif" font-size="10" fill="#94a3b8">• Asian Indian BMI cutoff (&gt;23)</text>
+      <text x="14" y="84" font-family="sans-serif" font-size="10" fill="#94a3b8">• Baseline HbA1c (5.7 - 14%)</text>
+      <text x="14" y="104" font-family="sans-serif" font-size="10" fill="#94a3b8">• Fasting Blood Glucose (FBG)</text>
+      <text x="14" y="124" font-family="sans-serif" font-size="10" fill="#94a3b8">• Renal function (eGFR, Cr)</text>
+      <text x="14" y="144" font-family="sans-serif" font-size="10" fill="#94a3b8">• Dyslipidemia (Triglycerides, HDL)</text>
+      <text x="14" y="164" font-family="sans-serif" font-size="10" fill="#94a3b8">• Genetic risk (TCF7L2 alleles)</text>
+      <text x="14" y="184" font-family="sans-serif" font-size="10" fill="#94a3b8">• Comorbidities (CVD, Neuropathy)</text>
+      <text x="14" y="204" font-family="sans-serif" font-size="10" fill="#94a3b8">• Baseline Meds (Metformin, SGLT2i)</text>
+      <rect x="14" y="215" width="192" height="18" rx="4" fill="rgba(56,189,248,0.1)"/>
+      <text x="20" y="228" font-family="sans-serif" font-size="9" font-weight="600" fill="#38bdf8">1,000 Synthea Synthetic Profiles</text>
+    </g>
+
+    <!-- Sub-Box 1B: Dynamic Wearable/CGM -->
+    <g transform="translate(15, 335)">
+      <rect width="220" height="280" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="14" y="26" font-family="sans-serif" font-size="12" font-weight="700" fill="#e2e8f0">Dynamic IoT &amp; Wearables</text>
+      <text x="14" y="44" font-family="sans-serif" font-size="10" fill="#94a3b8">• CGM Interstitial Glucose (5-min)</text>
+      <text x="14" y="64" font-family="sans-serif" font-size="10" fill="#94a3b8">• Heart Rate (PPG continuous)</text>
+      <text x="14" y="84" font-family="sans-serif" font-size="10" fill="#94a3b8">• HRV RMSSD (Parasympathetic)</text>
+      <text x="14" y="104" font-family="sans-serif" font-size="10" fill="#94a3b8">• Step Cadence (Walking burst)</text>
+      <text x="14" y="124" font-family="sans-serif" font-size="10" fill="#94a3b8">• Sleep Stages (Deep, Light, REM)</text>
+      <text x="14" y="144" font-family="sans-serif" font-size="10" fill="#94a3b8">• Indian Meal Carb Logs (g)</text>
+      <text x="14" y="164" font-family="sans-serif" font-size="10" fill="#94a3b8">• Circadian Phase (Hour of Day)</text>
+      <text x="14" y="184" font-family="sans-serif" font-size="10" fill="#94a3b8">• Insulin &amp; Oral Med timings</text>
+      <rect x="14" y="250" width="192" height="18" rx="4" fill="rgba(129,140,248,0.1)"/>
+      <text x="20" y="263" font-family="sans-serif" font-size="9" font-weight="600" fill="#818cf8">60,120 High-Res Sensor Points</text>
+    </g>
+  </g>
+
+  <!-- Connecting Arrow 1 -> 2 -->
+  <path d="M 300 420 L 335 420" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4 2"/>
+  <polygon points="340,420 332,415 332,425" fill="#38bdf8"/>
+
+  <!-- Pillar 2: Multimodal Feature Fusion Engine -->
+  <g transform="translate(345, 100)" filter="url(#shadow)">
+    <rect width="250" height="640" rx="14" fill="url(#cardGrad1)" stroke="rgba(168,85,247,0.2)" stroke-width="1.5"/>
+    <rect width="250" height="8" rx="4" fill="url(#purpleAccent)"/>
+    
+    <text x="20" y="38" font-family="sans-serif" font-size="15" font-weight="700" fill="#a855f7">2. MULTIMODAL FUSION</text>
+    <text x="20" y="56" font-family="sans-serif" font-size="11" fill="#64748b">Cross-Domain Feature Synthesis</text>
+
+    <g transform="translate(15, 75)">
+      <rect width="220" height="540" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      
+      <text x="14" y="30" font-family="sans-serif" font-size="11" font-weight="700" fill="#c084fc">Temporal Dynamic Derivatives</text>
+      <text x="14" y="50" font-family="sans-serif" font-size="10" fill="#94a3b8">• Glucose Velocity dG/dt (15/30m)</text>
+      <text x="14" y="70" font-family="sans-serif" font-size="10" fill="#94a3b8">• Acceleration d²G/dt²</text>
+      <text x="14" y="90" font-family="sans-serif" font-size="10" fill="#94a3b8">• Rolling Mean &amp; Std (1h &amp; 3h)</text>
+      <text x="14" y="110" font-family="sans-serif" font-size="10" fill="#94a3b8">• Glycemic CV% (Intraday volatility)</text>
+
+      <line x1="14" y1="130" x2="206" y2="130" stroke="rgba(255,255,255,0.08)"/>
+
+      <text x="14" y="155" font-family="sans-serif" font-size="11" font-weight="700" fill="#c084fc">Autonomic &amp; Metabolic Coupling</text>
+      <text x="14" y="175" font-family="sans-serif" font-size="10" fill="#94a3b8">• Autonomic Stress Ratio: HR / HRV</text>
+      <text x="14" y="195" font-family="sans-serif" font-size="10" fill="#94a3b8">• Sympathetic surge detector</text>
+      <text x="14" y="215" font-family="sans-serif" font-size="10" fill="#94a3b8">• Step accumulation over 1 hour</text>
+      <text x="14" y="235" font-family="sans-serif" font-size="10" fill="#94a3b8">• 2-Hour cumulative carbohydrate load</text>
+
+      <line x1="14" y1="255" x2="206" y2="255" stroke="rgba(255,255,255,0.08)"/>
+
+      <text x="14" y="280" font-family="sans-serif" font-size="11" font-weight="700" fill="#c084fc">Physiological Latent Embedding</text>
+      <text x="14" y="300" font-family="sans-serif" font-size="10" fill="#94a3b8">• Patient metabolic capacity vector</text>
+      <text x="14" y="320" font-family="sans-serif" font-size="10" fill="#94a3b8">• Beta-cell reserve proxy</text>
+      <text x="14" y="340" font-family="sans-serif" font-size="10" fill="#94a3b8">• Circadian trigonometric encoding</text>
+      <text x="14" y="360" font-family="sans-serif" font-size="10" fill="#94a3b8">• Indian phenotype penalty score</text>
+
+      <rect x="14" y="470" width="192" height="50" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="1"/>
+      <text x="24" y="492" font-family="sans-serif" font-size="10" font-weight="700" fill="#c7d2fe">42 Fused Multimodal Features</text>
+      <text x="24" y="508" font-family="sans-serif" font-size="9" fill="#a5b4fc">Patient-Aware Leakage Free Split</text>
+    </g>
+  </g>
+
+  <!-- Connecting Arrow 2 -> 3 -->
+  <path d="M 595 420 L 630 420" stroke="#a855f7" stroke-width="2.5" stroke-dasharray="4 2"/>
+  <polygon points="635,420 627,415 627,425" fill="#a855f7"/>
+
+  <!-- Pillar 3: Dual-Head AI Model & Digital Twin Simulator -->
+  <g transform="translate(640, 100)" filter="url(#shadow)">
+    <rect width="250" height="640" rx="14" fill="url(#cardGrad1)" stroke="rgba(52,211,153,0.2)" stroke-width="1.5"/>
+    <rect width="250" height="8" rx="4" fill="url(#greenAccent)"/>
+    
+    <text x="20" y="38" font-family="sans-serif" font-size="15" font-weight="700" fill="#34d399">3. DUAL-HEAD AI CORE</text>
+    <text x="20" y="56" font-family="sans-serif" font-size="11" fill="#64748b">Prediction &amp; What-If Simulation</text>
+
+    <!-- Head A: Continuous Regressor -->
+    <g transform="translate(15, 75)">
+      <rect width="220" height="165" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="14" y="24" font-family="sans-serif" font-size="11" font-weight="700" fill="#6ee7b7">Head A: 2h Glucose Forecaster</text>
+      <text x="14" y="42" font-family="sans-serif" font-size="10" fill="#94a3b8">• HistGBM Multi-tree Regressor</text>
+      <text x="14" y="62" font-family="sans-serif" font-size="10" fill="#94a3b8">• Prediction Horizon: +120 minutes</text>
+      <text x="14" y="82" font-family="sans-serif" font-size="10" fill="#34d399" font-weight="600">★ MARD: 7.15% (Benchmark &lt; 10%)</text>
+      <text x="14" y="102" font-family="sans-serif" font-size="10" fill="#34d399" font-weight="600">★ RMSE: 14.50 mg/dL</text>
+      <text x="14" y="122" font-family="sans-serif" font-size="10" fill="#94a3b8">• Generates 95% Confidence Band</text>
+    </g>
+
+    <!-- Head B: Adverse Event Classifier -->
+    <g transform="translate(15, 255)">
+      <rect width="220" height="175" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="14" y="24" font-family="sans-serif" font-size="11" font-weight="700" fill="#6ee7b7">Head B: Adverse Event Classifier</text>
+      <text x="14" y="42" font-family="sans-serif" font-size="10" fill="#94a3b8">• 3-Class Calibrated Ensemble</text>
+      <text x="14" y="62" font-family="sans-serif" font-size="10" fill="#ef4444" font-weight="600">• Nocturnal Hypo (&lt;70 mg/dL)</text>
+      <text x="14" y="82" font-family="sans-serif" font-size="10" fill="#f59e0b" font-weight="600">• Hyperglycemia Spike (&gt;200 mg/dL)</text>
+      <text x="14" y="102" font-family="sans-serif" font-size="10" fill="#10b981" font-weight="600">• In-Range Control (70-180 mg/dL)</text>
+      <text x="14" y="122" font-family="sans-serif" font-size="10" fill="#34d399" font-weight="600">★ Hyper Precision: 65.31%</text>
+      <text x="14" y="142" font-family="sans-serif" font-size="10" fill="#94a3b8">• Clinical Decision Threshold (18%)</text>
+    </g>
+
+    <!-- Head C: In-Silico Simulator -->
+    <g transform="translate(15, 445)">
+      <rect width="220" height="170" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="14" y="24" font-family="sans-serif" font-size="11" font-weight="700" fill="#fbbf24">In-Silico Counterfactual Engine</text>
+      <text x="14" y="42" font-family="sans-serif" font-size="10" fill="#94a3b8">• Dynamic What-If Simulation</text>
+      <text x="14" y="62" font-family="sans-serif" font-size="10" fill="#94a3b8">• Post-meal walk: +15 to +45 mins</text>
+      <text x="14" y="82" font-family="sans-serif" font-size="10" fill="#94a3b8">• Carb substitution: -10 to -60g</text>
+      <text x="14" y="102" font-family="sans-serif" font-size="10" fill="#94a3b8">• Insulin dose shift: -4U to +4U</text>
+      <text x="14" y="122" font-family="sans-serif" font-size="10" fill="#fbbf24" font-weight="600">• Instant delta trajectory output</text>
+    </g>
+  </g>
+
+  <!-- Connecting Arrow 3 -> 4 -->
+  <path d="M 890 420 L 925 420" stroke="#34d399" stroke-width="2.5" stroke-dasharray="4 2"/>
+  <polygon points="930,420 922,415 922,425" fill="#34d399"/>
+
+  <!-- Pillar 4: Clinician Digital Twin UI Cockpit -->
+  <g transform="translate(935, 100)" filter="url(#shadow)">
+    <rect width="215" height="640" rx="14" fill="url(#cardGrad1)" stroke="rgba(251,191,36,0.2)" stroke-width="1.5"/>
+    <rect width="215" height="8" rx="4" fill="url(#amberAccent)"/>
+    
+    <text x="16" y="38" font-family="sans-serif" font-size="14" font-weight="700" fill="#fbbf24">4. CLINICIAN COCKPIT</text>
+    <text x="16" y="56" font-family="sans-serif" font-size="11" fill="#64748b">Interactive Doctor Dashboard</text>
+
+    <g transform="translate(12, 75)">
+      <rect width="191" height="540" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+      <text x="12" y="26" font-family="sans-serif" font-size="11" font-weight="700" fill="#fde68a">Clinical Features</text>
+      <text x="12" y="46" font-family="sans-serif" font-size="10" fill="#94a3b8">• Live Patient Profile Cards</text>
+      <text x="12" y="66" font-family="sans-serif" font-size="10" fill="#94a3b8">• 6h Multi-stream Waveforms</text>
+      <text x="12" y="86" font-family="sans-serif" font-size="10" fill="#94a3b8">• 2h Forward Projection Band</text>
+      <text x="12" y="106" font-family="sans-serif" font-size="10" fill="#94a3b8">• Triage Early Warning Lights</text>
+
+      <line x1="12" y1="125" x2="179" y2="125" stroke="rgba(255,255,255,0.08)"/>
+
+      <text x="12" y="150" font-family="sans-serif" font-size="11" font-weight="700" fill="#fde68a">Physician Interactivity</text>
+      <text x="12" y="170" font-family="sans-serif" font-size="10" fill="#94a3b8">• Dynamic Sliders (Walk/Carbs)</text>
+      <text x="12" y="190" font-family="sans-serif" font-size="10" fill="#94a3b8">• Real-time curve re-rendering</text>
+      <text x="12" y="210" font-family="sans-serif" font-size="10" fill="#94a3b8">• Projected delta metric</text>
+      <text x="12" y="230" font-family="sans-serif" font-size="10" fill="#94a3b8">• RSSDI &amp; ADA Decision Support</text>
+
+      <line x1="12" y1="250" x2="179" y2="250" stroke="rgba(255,255,255,0.08)"/>
+
+      <text x="12" y="275" font-family="sans-serif" font-size="11" font-weight="700" fill="#fde68a">Explainable AI (XAI)</text>
+      <text x="12" y="295" font-family="sans-serif" font-size="10" fill="#94a3b8">• SHAP physiological factors</text>
+      <text x="12" y="315" font-family="sans-serif" font-size="10" fill="#94a3b8">• Autonomic crash attribution</text>
+      <text x="12" y="335" font-family="sans-serif" font-size="10" fill="#94a3b8">• Carbohydrate absorption surge</text>
+
+      <rect x="12" y="440" width="167" height="75" rx="6" fill="#14532d" stroke="#22c55e" stroke-width="1"/>
+      <text x="20" y="460" font-family="sans-serif" font-size="10" font-weight="700" fill="#bbf7d0">Live Web App Ready</text>
+      <text x="20" y="476" font-family="sans-serif" font-size="9" fill="#86efac">Port 8000 (FastAPI + JS)</text>
+      <text x="20" y="492" font-family="sans-serif" font-size="9" fill="#86efac">Fully Interactive UI</text>
+    </g>
+  </g>
+
+  <!-- Bottom Regulatory & Compliance Bar -->
+  <g transform="translate(60, 755)">
+    <rect width="1080" height="32" rx="8" fill="#1e293b" stroke="rgba(255,255,255,0.06)"/>
+    <text x="20" y="21" font-family="sans-serif" font-size="11" font-weight="600" fill="#94a3b8">DPDP ACT 2023 &amp; HIPAA SANDBOX GUARANTEE:</text>
+    <text x="325" y="21" font-family="sans-serif" font-size="11" fill="#cbd5e1">100% Synthetic &amp; De-identified Data • Zero Real Patient PII • In-Silico Testing Validated</text>
+  </g>
+</svg>

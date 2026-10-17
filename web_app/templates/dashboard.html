@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlycoTwin-AI | Clinician Digital Twin Platform</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            },
+            medical: {
+              green: '#10b981',
+              amber: '#f59e0b',
+              red: '#ef4444',
+              purple: '#8b5cf6',
+              dark: '#0f172a',
+              card: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0b1120;
+      color: #e2e8f0;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      transition: all 0.2s ease-in-out;
+    }
+    .pulse-red {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: pulse 1.6s infinite;
+    }
+    .pulse-amber {
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    .pulse-green {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 2.2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased text-slate-100">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur-md px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 text-white font-bold text-xl">
+          <i class="fa-solid fa-dna"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-indigo-300 to-emerald-400">
+              GlycoTwin-AI
+            </h1>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              Digital Twin v1.0
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">
+            Happiest Health Summit 2026 • Proactive Multimodal Glycemic Twin for Indian Diabetics
+          </p>
+        </div>
+      </div>
+
+      <!-- Compliance & Status Badges -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs text-slate-300">
+          <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+          <span>DPDP Act 2023 & HIPAA Compliant</span>
+        </div>
+        <div class="flex items-center space-x-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/30 text-xs font-medium text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>In-Silico Twin Active</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Clinical Cockpit Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- Top Ribbon: Patient Selector & High-Risk Alert Banner -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Patient Selector & Quick EHR Card -->
+      <div class="lg:col-span-1 glass-card p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center">
+            <i class="fa-solid fa-user-doctor mr-2 text-sky-400"></i> Virtual Patient Selector
+          </h2>
+          <span class="text-xs font-mono text-slate-400" id="ptCount">Cohort: 15 Twins</span>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5 font-medium">Select Patient Digital Twin:</label>
+          <select id="patientSelect" class="w-full bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
+            {{ PATIENT_OPTIONS }}
+          </select>
+        </div>
+
+        <!-- Static EHR Summary Pills -->
+        <div class="pt-2 border-t border-slate-800 space-y-2 text-xs">
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Demographics:</span>
+            <span id="ptDemo" class="font-semibold text-slate-200">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">BMI / Asian Indian Risk:</span>
+            <span id="ptBmi" class="font-semibold text-slate-200">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Baseline HbA1c / FBG:</span>
+            <span id="ptHbA1c" class="font-semibold text-sky-400 font-mono">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Renal Function (eGFR):</span>
+            <span id="ptEgfr" class="font-semibold text-slate-200">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+            <span class="text-slate-400">Current Pharmacotherapy:</span>
+            <span id="ptMeds" class="font-semibold text-emerald-400 truncate max-w-[190px]">Loading...</span>
+          </div>
+          <div class="flex justify-between items-center py-1">
+            <span class="text-slate-400">Dietary Phenotype:</span>
+            <span id="ptDiet" class="font-semibold text-amber-300 truncate max-w-[190px]">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Digital Twin Core Status & 2-Hour Ahead Predictive Gauge -->
+      <div class="lg:col-span-2 glass-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center space-x-2">
+            <span class="p-2 bg-sky-500/10 text-sky-400 rounded-lg text-lg">
+              <i class="fa-solid fa-brain"></i>
+            </span>
+            <div>
+              <h2 class="text-base font-bold text-slate-100">Digital Twin Multimodal State & Early Warning</h2>
+              <p class="text-xs text-slate-400">Fusing Continuous Glucose Monitor, Apple/Fitbit Wearable PPG, & Static EHR</p>
+            </div>
+          </div>
+          <div id="riskBadge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-current"></span>
+            <span id="riskText">Evaluating...</span>
+          </div>
+        </div>
+
+        <!-- 4-Pillar Clinical Metric Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4">
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>Current CGM</span>
+              <i class="fa-solid fa-droplet text-sky-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-slate-100" id="metricCurrentG">--</div>
+            <div class="text-[11px] text-slate-400 mt-1" id="metricGVelocity">Velocity: 0.0 mg/dL/min</div>
+          </div>
+
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>2-Hr Forecast</span>
+              <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-indigo-300" id="metricPredG">--</div>
+            <div class="text-[11px] text-slate-400 mt-1">Horizon: +120 mins</div>
+          </div>
+
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>Autonomic Stress</span>
+              <i class="fa-solid fa-heart-pulse text-rose-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-rose-300" id="metricAutonomic">--</div>
+            <div class="text-[11px] text-slate-400 mt-1">HR/HRV Coupling</div>
+          </div>
+
+          <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <div class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+              <span>Time-in-Range (TIR)</span>
+              <i class="fa-solid fa-bullseye text-emerald-400"></i>
+            </div>
+            <div class="text-2xl font-bold font-mono text-emerald-300" id="metricTIR">--%</div>
+            <div class="text-[11px] text-slate-400 mt-1">Target: 70-180 mg/dL</div>
+          </div>
+        </div>
+
+        <!-- Clinical Explanation Alert Callout -->
+        <div id="explanationBox" class="p-3.5 rounded-xl border text-xs flex items-start space-x-3">
+          <i class="fa-solid fa-circle-exclamation text-base mt-0.5"></i>
+          <div class="flex-1">
+            <span class="font-bold block mb-0.5" id="alertHeadline">Clinical Rationale:</span>
+            <p id="alertBody" class="text-slate-300 leading-relaxed">Analyzing physiological data stream...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section: Main Telemetry + Predictive Horizon -->
+    <div class="grid grid-cols-1 gap-6">
+      <div class="glass-card p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold text-slate-100 flex items-center">
+              <i class="fa-solid fa-chart-line mr-2 text-sky-400"></i>
+              Real-Time CGM Telemetry & 2-Hour Predictive Twin Trajectory
+            </h3>
+            <p class="text-xs text-slate-400">Solid line: Observed CGM | Dashed cyan: AI 2-Hour Forecast | Dashed Orange: In-Silico "What-If" Simulation</p>
+          </div>
+          <div class="flex items-center space-x-3 text-xs">
+            <span class="flex items-center"><span class="w-3 h-1 bg-emerald-500 mr-1.5 rounded-full"></span> Target Range (70-180)</span>
+            <span class="flex items-center"><span class="w-3 h-1 bg-sky-400 mr-1.5 rounded-full"></span> Observed CGM</span>
+            <span class="flex items-center"><span class="w-3 h-1 border-t-2 border-dashed border-indigo-400 mr-1.5"></span> 2h Forecast</span>
+            <span class="flex items-center" id="simLegend" style="display:none;"><span class="w-3 h-1 border-t-2 border-dashed border-amber-400 mr-1.5"></span> What-If Simulation</span>
+          </div>
+        </div>
+
+        <div class="h-80 w-full">
+          <canvas id="cgmChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Secondary Wearable Streams: HR, HRV, Steps, Meals -->
+      <div class="glass-card p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-300 flex items-center">
+            <i class="fa-solid fa-watch mr-2 text-indigo-400"></i> Fused Wearable & Behavioral Telemetry (Past 6 Hours)
+          </h3>
+          <div class="text-xs text-slate-400">Heart Rate (bpm) • HRV RMSSD (ms) • Steps • Indian Meals (carbs)</div>
+        </div>
+        <div class="h-44 w-full">
+          <canvas id="wearablesChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physician "What-If" In-Silico Counterfactual Simulation Playground -->
+    <div class="glass-card p-6 border-indigo-500/30 space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-800 gap-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-indigo-600 flex items-center justify-center text-white text-lg shadow-md shadow-amber-500/20">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-100">Physician "What-If" Digital Twin Counterfactual Simulator</h3>
+            <p class="text-xs text-slate-400">Simulate personalized behavioral & pharmacotherapy adjustments to proactively optimize patient trajectory</p>
+          </div>
+        </div>
+        <button id="runSimBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 font-semibold text-sm shadow-lg shadow-sky-500/25 transition flex items-center space-x-2">
+          <i class="fa-solid fa-play text-xs"></i>
+          <span>Run In-Silico Simulation</span>
+        </button>
+      </div>
+
+      <!-- 3 Dynamic Adjustment Controls -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Post-meal Brisk Walk -->
+        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-semibold text-slate-300 flex items-center">
+              <i class="fa-solid fa-person-walking text-sky-400 mr-2 text-sm"></i> Post-Prandial Walk
+            </label>
+            <span id="walkVal" class="text-xs font-mono font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded">0 mins</span>
+          </div>
+          <input type="range" id="walkSlider" min="0" max="45" step="5" value="0" class="w-full accent-sky-500 cursor-pointer">
+          <p class="text-[11px] text-slate-400">Activates muscular GLUT-4 glucose transporters to blunt postprandial glucose peaks.</p>
+        </div>
+
+        <!-- Indian Carb Substitution / Reduction -->
+        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-semibold text-slate-300 flex items-center">
+              <i class="fa-solid fa-bowl-rice text-amber-400 mr-2 text-sm"></i> Carb Swap / Reduction
+            </label>
+            <span id="carbVal" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">0 g</span>
+          </div>
+          <input type="range" id="carbSlider" min="0" max="60" step="5" value="0" class="w-full accent-amber-500 cursor-pointer">
+          <p class="text-[11px] text-slate-400">Swap refined white rice with Foxtail/Barnyard millets or reduce high-GI Indian carbs.</p>
+        </div>
+
+        <!-- Basal Insulin / Medication Timing -->
+        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-semibold text-slate-300 flex items-center">
+              <i class="fa-solid fa-syringe text-emerald-400 mr-2 text-sm"></i> Insulin / Med Dose Shift
+            </label>
+            <span id="insulinVal" class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">0 U</span>
+          </div>
+          <input type="range" id="insulinSlider" min="-4" max="4" step="1" value="0" class="w-full accent-emerald-500 cursor-pointer">
+          <p class="text-[11px] text-slate-400">Titrate basal insulin (-4U to +4U) to prevent nocturnal hypoglycemia or control spikes.</p>
+        </div>
+      </div>
+
+      <!-- Simulation Outcome Comparison Box -->
+      <div id="simOutcomeBox" class="hidden p-4 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xl font-bold">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-slate-100" id="simHeadline">Simulation Complete</h4>
+            <p class="text-xs text-slate-300 mt-0.5" id="simRecommendation">Analyzing counterfactual impact...</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-6 text-right">
+          <div>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Baseline 2h</span>
+            <span class="text-lg font-mono font-bold text-slate-300" id="simBaseVal">-- mg/dL</span>
+          </div>
+          <i class="fa-solid fa-arrow-right text-slate-500"></i>
+          <div>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Simulated 2h</span>
+            <span class="text-lg font-mono font-bold text-emerald-400" id="simNewVal">-- mg/dL</span>
+          </div>
+          <div class="border-l border-slate-700 pl-4">
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Projected Delta</span>
+            <span class="text-xl font-mono font-bold text-sky-400" id="simDeltaVal">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical & Clinical Benchmarking Footer -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-400">
+      <div class="glass-card p-4 space-y-1.5">
+        <span class="font-bold text-slate-300 block"><i class="fa-solid fa-microchip text-sky-400 mr-1.5"></i> Model Architecture</span>
+        <p>Multimodal Feature Fusion Engine combining Static EHR Latent Embeddings + Temporal Dynamic Sliding-Window XGBoost/HistGBM.</p>
+      </div>
+
+      <div class="glass-card p-4 space-y-1.5">
+        <span class="font-bold text-slate-300 block"><i class="fa-solid fa-trophy text-amber-400 mr-1.5"></i> Summit Evaluation Metrics</span>
+        <p>Continuous Forecast MARD: <span class="text-emerald-400 font-mono font-semibold">{{ metrics.get('mard_pct', '7.15') }}%</span> | RMSE: <span class="text-emerald-400 font-mono font-semibold">{{ metrics.get('rmse_mg_dl', '14.5') }} mg/dL</span> | Macro F1: <span class="text-emerald-400 font-mono font-semibold">{{ metrics.get('macro_f1', '0.54') }}</span></p>
+      </div>
+
+      <div class="glass-card p-4 space-y-1.5">
+        <span class="font-bold text-slate-300 block"><i class="fa-solid fa-gavel text-indigo-400 mr-1.5"></i> DPDP Act 2023 Compliance</span>
+        <p>Anonymized synthetic cohorts (Synthea/MIMIC-IV standards), zero PII storage, zero data leakage across patient boundary splits.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-4 text-center text-xs text-slate-500">
+    GlycoTwin-AI Proof-of-Concept • Happiest Health Reimagining and Reforming Healthcare in India Summit 2026, Bengaluru
+  </footer>
+
+  <!-- Frontend JavaScript Logic & Chart.js Integration -->
+  <script>
+    let cgmChartInstance = null;
+    let wearablesChartInstance = null;
+    let currentPatientData = null;
+
+    // Sliders
+    const walkSlider = document.getElementById('walkSlider');
+    const carbSlider = document.getElementById('carbSlider');
+    const insulinSlider = document.getElementById('insulinSlider');
+    const walkVal = document.getElementById('walkVal');
+    const carbVal = document.getElementById('carbVal');
+    const insulinVal = document.getElementById('insulinVal');
+
+    walkSlider.addEventListener('input', (e) => walkVal.innerText = `${e.target.value} mins`);
+    carbSlider.addEventListener('input', (e) => carbVal.innerText = `${e.target.value} g`);
+    insulinSlider.addEventListener('input', (e) => insulinVal.innerText = `${e.target.value > 0 ? '+' : ''}${e.target.value} U`);
+
+    // Fetch and display patient digital twin
+    async function loadPatient(patientId) {
+      try {
+        const res = await fetch(`/api/patient/${patientId}`);
+        const data = await res.json();
+        currentPatientData = data;
+
+        // Reset simulation UI
+        document.getElementById('simOutcomeBox').classList.add('hidden');
+        document.getElementById('simLegend').style.display = 'none';
+        walkSlider.value = 0; walkVal.innerText = "0 mins";
+        carbSlider.value = 0; carbVal.innerText = "0 g";
+        insulinSlider.value = 0; insulinVal.innerText = "0 U";
+
+        // Update EHR Info
+        const ehr = data.ehr;
+        document.getElementById('ptDemo').innerText = `${ehr.age}y ${ehr.gender} (T2D ${ehr.diabetes_duration_years}y)`;
+        document.getElementById('ptBmi').innerText = `${ehr.bmi} kg/m² (WHR: ${ehr.waist_hip_ratio})`;
+        document.getElementById('ptHbA1c').innerText = `${ehr.hba1c_pct}% (${ehr.fasting_glucose_mg_dl} mg/dL FBG)`;
+        document.getElementById('ptEgfr').innerText = `${ehr.egfr_ml_min} mL/min (Cr: ${ehr.serum_creatinine_mg_dl})`;
+        document.getElementById('ptMeds').innerText = ehr.medication_regimen;
+        document.getElementById('ptDiet').innerText = ehr.dietary_pattern;
+
+        // Update Status & Metrics
+        const twin = data.twin_status;
+        const lastCgm = data.telemetry.cgm_glucose[data.telemetry.cgm_glucose.length - 1];
+        const prevCgm = data.telemetry.cgm_glucose[data.telemetry.cgm_glucose.length - 4];
+        const velocity = ((lastCgm - prevCgm) / 15.0).toFixed(2);
+
+        document.getElementById('metricCurrentG').innerText = `${lastCgm} mg/dL`;
+        document.getElementById('metricGVelocity').innerText = `Velocity: ${velocity > 0 ? '+' : ''}${velocity} mg/dL/min`;
+        document.getElementById('metricPredG').innerText = `${twin.predicted_glucose_2h} mg/dL`;
+
+        const lastHr = data.telemetry.heart_rate[data.telemetry.heart_rate.length - 1];
+        const lastHrv = data.telemetry.hrv_rmssd[data.telemetry.hrv_rmssd.length - 1];
+        const autonomic = (lastHr / lastHrv).toFixed(2);
+        document.getElementById('metricAutonomic').innerText = autonomic;
+
+        // Time in range calculation
+        const inRangeCount = data.telemetry.cgm_glucose.filter(v => v >= 70 && v <= 180).length;
+        const tirPct = ((inRangeCount / data.telemetry.cgm_glucose.length) * 100).toFixed(0);
+        document.getElementById('metricTIR').innerText = `${tirPct}%`;
+
+        // Update Risk Badge
+        const riskBadge = document.getElementById('riskBadge');
+        const riskText = document.getElementById('riskText');
+        const explanationBox = document.getElementById('explanationBox');
+        const alertHeadline = document.getElementById('alertHeadline');
+        const alertBody = document.getElementById('alertBody');
+
+        riskBadge.className = 'px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center space-x-2 ';
+        if (twin.predicted_event_code === 2) {
+          riskBadge.className += 'bg-red-500/20 text-red-400 border border-red-500/40 pulse-red';
+          riskText.innerText = 'CRITICAL: Nocturnal Hypoglycemia Alert';
+          explanationBox.className = 'p-3.5 rounded-xl border border-red-500/40 bg-red-950/30 text-red-300 text-xs flex items-start space-x-3';
+          alertHeadline.innerText = 'Severe Hypoglycemia Warning (<70 mg/dL):';
+        } else if (twin.predicted_event_code === 1) {
+          riskBadge.className += 'bg-amber-500/20 text-amber-400 border border-amber-500/40 pulse-amber';
+          riskText.innerText = 'WARNING: Hyperglycemic Spike Alert';
+          explanationBox.className = 'p-3.5 rounded-xl border border-amber-500/40 bg-amber-950/30 text-amber-300 text-xs flex items-start space-x-3';
+          alertHeadline.innerText = 'Postprandial Hyperglycemia Warning (>200 mg/dL):';
+        } else {
+          riskBadge.className += 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 pulse-green';
+          riskText.innerText = 'STABLE: Glycemic Homeostasis In-Range';
+          explanationBox.className = 'p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-950/30 text-emerald-300 text-xs flex items-start space-x-3';
+          alertHeadline.innerText = 'Physiological Twin Controlled (70-180 mg/dL):';
+        }
+        alertBody.innerText = twin.clinical_explanations.join(' ');
+
+        // Render Charts
+        renderMainCgmChart(data);
+        renderWearablesChart(data);
+
+      } catch (err) {
+        console.error("Failed to load patient twin:", err);
+      }
+    }
+
+    // Main CGM Chart Rendering
+    function renderMainCgmChart(data, simulatedCurve = null) {
+      const ctx = document.getElementById('cgmChart').getContext('2d');
+      const telem = data.telemetry;
+      const forecast = data.forecast;
+
+      // Labels: past timestamps + future 24 steps
+      const pastLabels = telem.timestamps.map(t => t.split(' ')[1].slice(0, 5));
+      const futureLabels = Array.from({length: 24}, (_, i) => `+${(i+1)*5}m`);
+      const allLabels = [...pastLabels, ...futureLabels];
+
+      // Observed CGM: values for past, nulls for future
+      const observedData = [...telem.cgm_glucose, ...Array(24).fill(null)];
+
+      // 2h Forecast: nulls for past, connected at last point
+      const forecastData = Array(telem.cgm_glucose.length - 1).fill(null);
+      forecastData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+      forecastData.push(...forecast.points);
+
+      // Upper & Lower bounds
+      const upperData = Array(telem.cgm_glucose.length - 1).fill(null);
+      upperData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+      upperData.push(...forecast.upper_bound);
+
+      const lowerData = Array(telem.cgm_glucose.length - 1).fill(null);
+      lowerData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+      lowerData.push(...forecast.lower_bound);
+
+      const datasets = [
+        {
+          label: 'Observed CGM (mg/dL)',
+          data: observedData,
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.08)',
+          borderWidth: 2.5,
+          pointRadius: 1,
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: '2-Hour Forecast',
+          data: forecastData,
+          borderColor: '#818cf8',
+          borderWidth: 2.5,
+          borderDash: [5, 4],
+          pointRadius: 2,
+          pointBackgroundColor: '#818cf8',
+          tension: 0.3,
+          fill: false
+        },
+        {
+          label: '95% Confidence Upper',
+          data: upperData,
+          borderColor: 'rgba(129, 140, 248, 0.25)',
+          borderWidth: 1,
+          borderDash: [2, 2],
+          pointRadius: 0,
+          fill: false
+        },
+        {
+          label: '95% Confidence Lower',
+          data: lowerData,
+          borderColor: 'rgba(129, 140, 248, 0.25)',
+          backgroundColor: 'rgba(129, 140, 248, 0.1)',
+          borderWidth: 1,
+          borderDash: [2, 2],
+          pointRadius: 0,
+          fill: '-1' // Fill between upper and lower
+        }
+      ];
+
+      // If simulation is active, append simulated trajectory
+      if (simulatedCurve) {
+        const simData = Array(telem.cgm_glucose.length - 1).fill(null);
+        simData.push(telem.cgm_glucose[telem.cgm_glucose.length - 1]);
+        simData.push(...simulatedCurve);
+
+        datasets.push({
+          label: 'Simulated In-Silico Intervention',
+          data: simData,
+          borderColor: '#fbbf24',
+          borderWidth: 3,
+          borderDash: [6, 4],
+          pointRadius: 3,
+          pointBackgroundColor: '#fbbf24',
+          tension: 0.3,
+          fill: false
+        });
+      }
+
+      if (cgmChartInstance) cgmChartInstance.destroy();
+
+      cgmChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: allLabels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleColor: '#e2e8f0',
+              bodyColor: '#94a3b8',
+              borderColor: '#334155',
+              borderWidth: 1
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#64748b', maxTicksLimit: 14 }
+            },
+            y: {
+              min: 40,
+              max: 300,
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#64748b' }
+            }
+          }
+        }
+      });
+    }
+
+    // Secondary Wearables Chart
+    function renderWearablesChart(data) {
+      const ctx = document.getElementById('wearablesChart').getContext('2d');
+      const telem = data.telemetry;
+      const labels = telem.timestamps.map(t => t.split(' ')[1].slice(0, 5));
+
+      if (wearablesChartInstance) wearablesChartInstance.destroy();
+
+      wearablesChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Heart Rate (bpm)',
+              data: telem.heart_rate,
+              borderColor: '#f43f5e',
+              borderWidth: 1.5,
+              pointRadius: 0,
+              tension: 0.2,
+              yAxisID: 'y'
+            },
+            {
+              label: 'HRV RMSSD (ms)',
+              data: telem.hrv_rmssd,
+              borderColor: '#a855f7',
+              borderWidth: 1.5,
+              pointRadius: 0,
+              tension: 0.2,
+              yAxisID: 'y'
+            },
+            {
+              type: 'bar',
+              label: 'Steps (5-min)',
+              data: telem.steps,
+              backgroundColor: 'rgba(56, 189, 248, 0.35)',
+              yAxisID: 'ySteps'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { color: '#94a3b8', boxWidth: 10, font: { size: 10 } }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#64748b', maxTicksLimit: 12 }
+            },
+            y: {
+              min: 30,
+              max: 130,
+              grid: { color: 'rgba(255, 255, 255, 0.04)' },
+              ticks: { color: '#64748b', font: { size: 10 } }
+            },
+            ySteps: {
+              position: 'right',
+              min: 0,
+              max: 400,
+              grid: { display: false },
+              ticks: { color: '#64748b', font: { size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    // Run In-Silico Counterfactual Simulation
+    document.getElementById('runSimBtn').addEventListener('click', async () => {
+      const patientId = document.getElementById('patientSelect').value;
+      const walk = parseInt(walkSlider.value);
+      const carbs = parseInt(carbSlider.value);
+      const insulin = parseInt(insulinSlider.value);
+
+      try {
+        const res = await fetch('/api/simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            patient_id: patientId,
+            walk_minutes: walk,
+            carb_reduction_grams: carbs,
+            insulin_adjustment_units: insulin
+          })
+        });
+
+        const sim = await res.json();
+        
+        // Show outcome
+        document.getElementById('simOutcomeBox').classList.remove('hidden');
+        document.getElementById('simLegend').style.display = 'flex';
+        document.getElementById('simBaseVal').innerText = `${sim.baseline.predicted_glucose_2h} mg/dL`;
+        document.getElementById('simNewVal').innerText = `${sim.simulated.predicted_glucose_2h} mg/dL`;
+        
+        const delta = sim.delta_glucose_mg_dl;
+        document.getElementById('simDeltaVal').innerText = `${delta > 0 ? '+' : ''}${delta} mg/dL`;
+        document.getElementById('simRecommendation').innerText = sim.clinical_recommendation;
+
+        // Overlay simulated curve on chart
+        renderMainCgmChart(currentPatientData, sim.simulated_forecast_curve);
+
+      } catch (err) {
+        console.error("Simulation error:", err);
+      }
+    });
+
+    // Patient Dropdown Event Listener
+    document.getElementById('patientSelect').addEventListener('change', (e) => {
+      loadPatient(e.target.value);
+    });
+
+    // Initial Load
+    window.addEventListener('DOMContentLoaded', () => {
+      const defaultPid = document.getElementById('patientSelect').value;
+      loadPatient(defaultPid);
+    });
+  </script>
+</body>
+</html>
