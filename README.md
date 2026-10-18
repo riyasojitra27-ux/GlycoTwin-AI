@@ -30,17 +30,23 @@
 
 ---
 
-## Team Details & Academic Incubator
+## Team Details
 
-- **Team Name:** Team GlycoTwin India
-- **College / Institute:** Indian Institute of Technology / Leading University Incubator
-- **Incubator / Department:** Healthcare Technology & AI Innovation Hub / Biomedical Informatics
-- **Team Composition:**
-  - **Team Leader:** ML System Architect & Biomedical Engineering Lead
-  - **Member 2:** Data Science & Multimodal Time-Series Specialist
-  - **Member 3:** Clinical Systems & Biosensor Integration Specialist
-  - **Member 4:** Full-Stack Digital Health & UI/UX Engineer
-- **Contact:** Team Leader Email & Phone (Provided in Summit Submission Portal)
+- **Project Title:** GlycoTwin-AI
+- **Team Name:** LynxieCreations
+- **Team Members:**
+  1. **Riya Sojitra**
+  2. **Tanishqua Trivedi**
+- **Institution:** V.V.P. Engineering College, Rajkot, Gujarat, India
+- **Incubator:** Not applicable / Not specified
+- **Project Category:** Artificial Intelligence in Healthcare
+- **Project Focus:** AI-assisted diabetes management, glucose prediction, and personalized health insights.
+
+### Team Contribution
+
+Our two-member team is developing GlycoTwin-AI, an AI-powered healthcare prototype designed to explore personalized glucose forecasting and diabetes-management support. Our work focuses on combining health-related data, machine-learning techniques, and an accessible interface to help users understand potential glucose trends and explore lifestyle scenarios.
+
+GlycoTwin-AI is a research prototype and is not intended to replace professional medical advice or clinical decisions.
 
 ---
 
