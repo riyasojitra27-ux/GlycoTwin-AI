@@ -1261,14 +1261,105 @@
     `;
     document.body.appendChild(tourBox);
 
-    // Speak helper using Web Speech API
-    function speakText(text) {
-      if (!speechEnabled || !('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel(); // Stop prior
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
+    // ── Robust Speech Engine (fixes Chrome's 15-second silent-cancel bug) ──
+    let speechQueue = [];
+    let speechKeepAlive = null;
+    let currentUtterance = null;
+    let preferredVoice = null;
+
+    // Pick the best available English voice (prefer natural/enhanced voices)
+    function pickVoice() {
+      if (preferredVoice) return preferredVoice;
+      const voices = window.speechSynthesis.getVoices();
+      // Rank: Google UK English Female > Samantha (macOS) > any en voice
+      const rankings = [
+        'Google UK English Female', 'Google US English', 'Karen', 'Samantha',
+        'Daniel', 'Moira', 'Tessa', 'Rishi', 'Veena'
+      ];
+      for (const name of rankings) {
+        const v = voices.find(voice => voice.name.includes(name));
+        if (v) { preferredVoice = v; return v; }
+      }
+      const enVoice = voices.find(v => v.lang.startsWith('en'));
+      if (enVoice) { preferredVoice = enVoice; return enVoice; }
+      return null;
+    }
+
+    // Load voices (they load asynchronously in some browsers)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = pickVoice;
+      pickVoice();
+    }
+
+    // Chrome silently cancels utterances after ~15s of speaking.
+    // This keepalive timer pauses+resumes every 10s to reset Chrome's internal counter.
+    function startKeepAlive() {
+      stopKeepAlive();
+      speechKeepAlive = setInterval(() => {
+        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }
+      }, 10000);
+    }
+    function stopKeepAlive() {
+      if (speechKeepAlive) { clearInterval(speechKeepAlive); speechKeepAlive = null; }
+    }
+
+    // Split text into natural sentences for individual utterances
+    function splitIntoSentences(text) {
+      // Split on sentence endings (.!?) followed by a space or end-of-string
+      // but keep abbreviations like "mg/dL" or "7.15%" intact
+      const raw = text.match(/[^.!?]*[.!?]+[\s]*/g) || [text];
+      return raw.map(s => s.trim()).filter(s => s.length > 0);
+    }
+
+    function speakText(text, onComplete) {
+      if (!speechEnabled || !('speechSynthesis' in window)) {
+        if (onComplete) onComplete();
+        return;
+      }
+      // Cancel any prior speech
+      window.speechSynthesis.cancel();
+      stopKeepAlive();
+      speechQueue = [];
+
+      const fullText = text;
+      const sentences = splitIntoSentences(fullText);
+      let sentenceIdx = 0;
+
+      function speakNext() {
+        if (sentenceIdx >= sentences.length) {
+          stopKeepAlive();
+          if (onComplete) onComplete();
+          return;
+        }
+        const sentence = sentences[sentenceIdx];
+        sentenceIdx++;
+
+        const utt = new SpeechSynthesisUtterance(sentence);
+        utt.rate = 0.88;   // Slightly slower for clarity & professionalism
+        utt.pitch = 1.02;  // Very slight lift for warmth
+        utt.volume = 1.0;
+
+        const voice = pickVoice();
+        if (voice) utt.voice = voice;
+
+        utt.onend = () => {
+          // Small natural pause between sentences (300ms)
+          setTimeout(speakNext, 300);
+        };
+        utt.onerror = (e) => {
+          console.warn('Speech error on sentence:', e);
+          setTimeout(speakNext, 200);
+        };
+
+        currentUtterance = utt;
+        window.speechSynthesis.speak(utt);
+      }
+
+      startKeepAlive();
+      speakNext();
     }
 
     function renderTourStep(idx) {
@@ -1289,24 +1380,46 @@
       // Trigger step actions
       if (cur.action) cur.action();
 
-      // Trigger speech if enabled
-      speakText(`${cur.title}. ${cur.text}`);
-
-      // Set timer
+      // Clear prior timer
       clearInterval(tourTimer);
-      tourSecondsLeft = cur.duration;
-      document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
 
-      tourTimer = setInterval(() => {
-        if (!isTourPaused) {
-          tourSecondsLeft--;
-          document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
-          if (tourSecondsLeft <= 0) {
-            clearInterval(tourTimer);
-            renderTourStep(currentTourIdx + 1);
+      // Speak title + text, then auto-advance after speech finishes (+ 2s buffer)
+      const speechText = cur.title + '. ... ' + cur.text;
+
+      speakText(speechText, () => {
+        // Speech finished — give 2 seconds of silence, then advance
+        tourSecondsLeft = 2;
+        document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+        tourTimer = setInterval(() => {
+          if (!isTourPaused) {
+            tourSecondsLeft--;
+            document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+            if (tourSecondsLeft <= 0) {
+              clearInterval(tourTimer);
+              renderTourStep(currentTourIdx + 1);
+            }
           }
-        }
-      }, 1000);
+        }, 1000);
+      });
+
+      // Fallback countdown timer (in case speech is disabled or fails)
+      if (!speechEnabled) {
+        tourSecondsLeft = cur.duration;
+        document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+        tourTimer = setInterval(() => {
+          if (!isTourPaused) {
+            tourSecondsLeft--;
+            document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
+            if (tourSecondsLeft <= 0) {
+              clearInterval(tourTimer);
+              renderTourStep(currentTourIdx + 1);
+            }
+          }
+        }, 1000);
+      } else {
+        // Show "Speaking..." while voice is active
+        document.getElementById('tourTimerDisplay').innerText = '🔊';
+      }
     }
 
     function startTour() {
@@ -1318,6 +1431,7 @@
 
     function endTour() {
       clearInterval(tourTimer);
+      stopKeepAlive();
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       tourBox.classList.add('hidden');
     }
@@ -1327,10 +1441,14 @@
     document.getElementById('tourCloseBtn').addEventListener('click', endTour);
 
     document.getElementById('tourNextBtn').addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      stopKeepAlive();
       renderTourStep(currentTourIdx + 1);
     });
 
     document.getElementById('tourPrevBtn').addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      stopKeepAlive();
       renderTourStep(Math.max(0, currentTourIdx - 1));
     });
 
@@ -1340,9 +1458,11 @@
       if (isTourPaused) {
         btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Resume`;
         if ('speechSynthesis' in window) window.speechSynthesis.pause();
+        stopKeepAlive();
       } else {
         btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause`;
         if ('speechSynthesis' in window) window.speechSynthesis.resume();
+        startKeepAlive();
       }
     });
 
@@ -1350,8 +1470,10 @@
       speechEnabled = e.target.checked;
       if (!speechEnabled && ('speechSynthesis' in window)) {
         window.speechSynthesis.cancel();
+        stopKeepAlive();
       } else if (speechEnabled) {
-        speakText(tourSteps[currentTourIdx].text);
+        const cur = tourSteps[currentTourIdx];
+        speakText(cur.title + '. ... ' + cur.text);
       }
     });
   </script>
