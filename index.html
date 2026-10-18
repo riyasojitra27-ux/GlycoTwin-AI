@@ -107,7 +107,7 @@
       <div class="flex items-center space-x-3">
         <button id="startAiTourBtn" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-500 hover:from-purple-500 hover:to-sky-400 font-semibold text-xs shadow-md shadow-indigo-500/25 transition flex items-center space-x-2 text-white">
           <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
-          <span>🎬 Start AI Guided Video Tour</span>
+          <span>🎬 Start AI Guided Video Tour (18-Min Demo)</span>
         </button>
         <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs text-slate-300">
           <i class="fa-solid fa-shield-halved text-emerald-400"></i>
@@ -1075,80 +1075,104 @@
     const tourSteps = [
       {
         step: 1,
-        title: "Welcome & Clinical Mission in India",
-        subtitle: "Happiest Health Summit 2026 • Type 2 Diabetes Digital Twin",
-        text: "Welcome members of the jury and clinical experts. India faces a catastrophic diabetes crisis with over 101 million patients. Traditional clinical care is reactive—relying on quarterly HbA1c tests. Today, we demonstrate GlycoTwin-AI: a dynamic multimodal Digital Twin predicting adverse glycemic events 2 hours in advance.",
+        title: "Introduction & The Indian Diabetes Epidemic",
+        subtitle: "Happiest Health Summit 2026 • Welcome & National Clinical Problem",
+        text: "Respected members of the jury, clinical experts, and the Happiest Health evaluation committee. Good morning. Today, clinical diabetes care is overwhelmingly reactive: patients test their blood glucose only after experiencing symptoms, or discover irreversible microvascular organ damage years after silent glycemic fluctuations have occurred. In India, this reactive paradigm has triggered an unprecedented public health crisis. As documented by the 2023 ICMR-INDIAB national study, India is home to over 101 million diagnosed diabetics and another 136 million pre-diabetic individuals. Our population exhibits the distinct Asian Indian Phenotype: higher visceral adiposity, hyperinsulinemia, and pronounced insulin resistance even at lower body mass index thresholds of just 23. Combined with carbohydrate-heavy dietary staples, Indian patients experience extreme postprandial glucose surges followed by silent nocturnal hypoglycemia. Today, Team GlycoTwin India presents GlycoTwin-AI: a dynamic, multimodal Digital Twin proof-of-concept that shifts healthcare from reactive treatment to proactive in-silico prevention.",
         target: "header",
-        action: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); },
-        duration: 12
+        action: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); }
       },
       {
         step: 2,
-        title: "Dual Data Stream Ingestion (EHR + Wearables)",
-        subtitle: "DPDP Act 2023 & HIPAA Compliant Data Fusion",
-        text: "Our architecture fuses two distinct temporal streams: Static Historical EHR (Asian Indian BMI >= 23, baseline HbA1c, renal eGFR, lipid dyslipidemia, and genetics) paired with Dynamic IoT Telemetry (5-minute CGM interstitial glucose, Heart Rate, HRV RMSSD, step cadence, and Indian meal carbs).",
-        target: "ptDemo",
-        action: () => {
-          document.getElementById('patientSelect').value = 'IND-PT-10007';
-          loadPatient('IND-PT-10007');
-          document.getElementById('ptDemo').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        },
-        duration: 13
+        title: "Clinical Blindspots: Why Quarterly HbA1c Fails",
+        subtitle: "The Critical Need for Real-Time Glycemic Velocity and Time-in-Range",
+        text: "To understand why a Digital Twin is imperative, we must examine the fundamental flaw of conventional diabetes monitoring: the quarterly HbA1c test. While HbA1c provides a three-month retrospective average of circulating glycated hemoglobin, it completely masks acute glycemic variability. Two patients can present with an identical HbA1c of 7.5 percent; yet one patient experiences stable physiological homeostasis, while the other endures violent daily swings between severe postprandial hyperglycemia exceeding 250 milligrams per deciliter and life-threatening hypoglycemia below 60. Modern clinical diabetology emphasizes Time-In-Range between 70 and 180 milligrams per deciliter as the true predictor of diabetic complications. By solely relying on retrospective quarterly tests, clinicians miss acute daily dysglycemia until organ damage has already manifested. GlycoTwin-AI solves this blindspot by continuously tracking and forecasting real-time interstitial trajectories.",
+        target: "metricTIR",
+        action: () => { document.getElementById('metricTIR').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       },
       {
         step: 3,
-        title: "Patient Focus: IND-PT-10007 (High Postprandial Spikes)",
-        subtitle: "54-Year-Old Indian Male with High-Carbohydrate Rice Staple Diet",
-        text: "Notice Patient IND-PT-10007: Baseline HbA1c is 9.4% with 9 years of diabetes. Current glucose is 185 mg/dL. The Digital Twin calculates a steep positive glycemic velocity (+1.4 mg/dL/min) driven by recent Indian carbohydrate intake.",
-        target: "metricCurrentG",
-        action: () => {
-          document.getElementById('metricCurrentG').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        },
-        duration: 12
+        title: "The Healthcare Digital Twin Paradigm",
+        subtitle: "Living In-Silico Physiology vs Traditional Static Machine Learning",
+        text: "What makes a Healthcare Digital Twin fundamentally different from standard machine learning? Conventional predictive algorithms take static snapshots of patient variables and generate static classifications. But human biology is an adaptive, dynamic homeostatic system governed by continuous neuroendocrine feedback loops. A Healthcare Digital Twin is a living, in-silico computational replica of an individual patient's unique physiological state. It maintains continuous state tracking, estimates dynamic insulin sensitivity drift over time, and integrates counterfactual simulation capabilities. In aerospace engineering, a new aircraft wing is evaluated inside a digital wind tunnel before being flown in reality. With GlycoTwin-AI, a physician can test a dietary substitution, a personalized exercise bout, or an insulin dose titration inside the patient's virtual twin before recommending it to the actual patient.",
+        target: "ptDemo",
+        action: () => { document.getElementById('ptDemo').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       },
       {
         step: 4,
-        title: "2-Hour Ahead Predictive Early Warning",
-        subtitle: "Triage Alert: Impending Hyperglycemia Spike (>200 mg/dL)",
-        text: "Look at the main chart: The solid line shows observed CGM over the last 6 hours. The dashed purple curve projects the 2-hour ahead forecast with its 95% confidence band. The twin flags an impending spike to 218 mg/dL—triggering a WARNING AMBER alert.",
-        target: "cgmChart",
-        action: () => {
-          document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        },
-        duration: 13
+        title: "Dual Data Stream Ingestion Architecture",
+        subtitle: "Multimodal Fusion of Static Clinical EHR and Dynamic IoT Wearables",
+        text: "The foundational breakthrough of GlycoTwin-AI is the continuous fusion of two complementary data streams. The first stream is Static Historical Electronic Health Records: modeling age, gender, Asian Indian BMI, baseline HbA1c, fasting plasma glucose, renal filtration via eGFR, serum creatinine, lipid profiles, and genetic risk alleles such as TCF7L2. The second stream is Dynamic Real-Time IoT Telemetry: streaming at 5-minute continuous intervals. This dynamic stream ingests interstitial glucose from Continuous Glucose Monitors, continuous heart rate and Heart Rate Variability RMSSD from optical photoplethysmography sensors, step cadences from accelerometers, and meal carbohydrate intake logs. By fusing static metabolic clearance baselines with dynamic continuous telemetry, our twin captures both chronic organ reserve and acute meal-induced glucose surges.",
+        target: "riskBadge",
+        action: () => { document.getElementById('riskBadge').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       },
       {
         step: 5,
-        title: "Physician 'What-If' Counterfactual Simulation",
-        subtitle: "Testing Personalized Interventions In-Silico Before Clinical Execution",
-        text: "Doctors cannot conduct risky trial-and-error experiments on real patients. Using our in-silico simulation engine, we test two non-pharmacological interventions: a 20-minute post-meal brisk walk and a 35g carb reduction (swapping polished white rice for foxtail millet).",
+        title: "DPDP Act 2023 & HIPAA Compliant Synthetic Sandbox",
+        subtitle: "Zero-PII Synthetic Cohorts with Authentic Indian Epidemiology",
+        text: "Deploying artificial intelligence in clinical medicine requires absolute fidelity to patient privacy regulations. Under India’s Digital Personal Data Protection Act of 2023 and global HIPAA guidelines, training AI on identifiable patient records is strictly restricted. To comply with these legal and ethical mandates while preserving biological realism, GlycoTwin-AI was trained exclusively on a synthetic Indian diabetic cohort adhering to Synthea and MIMIC-IV clinical architecture standards. Our synthetic patient generator models 1,000 diverse Indian patients across various geographic dietary patterns, with over 60,000 continuous telemetry timepoints. Crucially, all machine learning pipelines enforce strict patient-level isolation between training and holdout validation sets. No identifiable patient data is ever stored, ensuring complete regulatory compliance with zero data leakage across patient boundaries.",
+        target: "ptDemo",
+        action: () => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+      },
+      {
+        step: 6,
+        title: "Algorithmic Modeling & 42 Multi-Domain Features",
+        subtitle: "Differential Glucose Kinetics, Lag Compensation & Autonomic Coupling",
+        text: "Our machine learning pipeline translates raw physiological telemetry into 42 engineered temporal features grounded in the Bergman Minimal Model of glucose kinetics. From 6-hour sliding temporal windows, we calculate the first and second numerical derivatives representing glucose velocity and acceleration, 1-hour and 3-hour intraday glycemic volatility coefficients, and meal-to-peak absorption rates. Furthermore, our model extracts an Autonomic Stress Index computed from continuous Heart Rate divided by HRV RMSSD. Why is this autonomic coupling crucial? Because during impending nocturnal hypoglycemia, the sympathetic nervous system triggers an emergency counter-regulatory catecholamine surge before glucose crashes. By capturing autonomic tone alongside glucose kinetics, our twin achieves unmatched predictive sensitivity.",
+        target: "cgmChart",
+        action: () => { document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      },
+      {
+        step: 7,
+        title: "Clinical Benchmarks: 7.15% MARD Gold Standard",
+        subtitle: "Rigorous Holdout Validation • 14.50 mg/dL RMSE • 120-Minute Early Warning",
+        text: "Rigorous clinical validation is the ultimate test of any medical software. Evaluated on unseen patient holdouts across 59,940 continuous telemetry points using HistGradientBoosting regressors and multi-class classifiers, GlycoTwin-AI achieved an outstanding Mean Absolute Relative Difference of 7.15 percent and a Root Mean Squared Error of 14.50 milligrams per deciliter. In clinical diabetology, a MARD below 10 percent is universally recognized as the gold standard benchmark for continuous glucose monitoring devices. For adverse event classification, the twin achieves 65.31 percent precision in flagging impending postprandial hyperglycemic spikes and provides a full 120-minute early warning lead time, giving doctors and patients a critical two-hour therapeutic window to prevent emergency metabolic decompensation.",
+        target: "cgmChart",
+        action: () => { document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      },
+      {
+        step: 8,
+        title: "Live Clinician Cockpit Walkthrough: Patient IND-PT-10007",
+        subtitle: "54-Year-Old Indian Male • High-Carbohydrate Rice Staple • Acute Spike Alert",
+        text: "Now let us demonstrate how a practicing physician interacts with GlycoTwin-AI in real-time. Look at the Virtual Patient Selector on the upper left of the Clinician Cockpit. We have selected Patient IND-PT-10007, a 54-year-old Indian male with a 9-year history of Type 2 Diabetes, a BMI of 29, a baseline HbA1c of 9.4 percent, and a high-carbohydrate rice staple diet. Current interstitial glucose is 185 milligrams per deciliter. Looking at the four-pillar metric cards, the twin calculates a steep positive glycemic velocity of plus 1.40 milligrams per deciliter per minute following his lunch. Notice the alert banner: The twin projects an impending acute hyperglycemic spike reaching 218 milligrams per deciliter in 2 hours, illuminating the Warning Amber alert badge.",
+        target: "metricCurrentG",
+        action: () => {
+          document.getElementById('patientSelect').value = 'IND-PT-10007';
+          loadPatient('IND-PT-10007');
+          setTimeout(() => {
+            document.getElementById('metricCurrentG').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 200);
+        }
+      },
+      {
+        step: 9,
+        title: "In-Silico What-If Counterfactual Simulator",
+        subtitle: "Testing Lifestyle & Medical Interventions In-Silico Before Clinical Execution",
+        text: "In conventional medical practice, a physician cannot test different clinical interventions on a living patient without risking adverse outcomes. But with GlycoTwin-AI, the clinician possesses an In-Silico Counterfactual Simulator. Looking at the interactive simulation drawer below the charts, the physician investigates: What if we advise this patient to perform a 20-minute brisk walk immediately following lunch, and reduce 35 grams of carbohydrate by substituting polished white rice with high-fiber foxtail millet? We set the Post-Meal Walk slider to 20 minutes, set the Carb Reduction slider to 35 grams, and click Run In-Silico Simulation.",
         target: "walkSlider",
         action: () => {
           document.getElementById('walkSlider').scrollIntoView({ behavior: 'smooth', block: 'center' });
           walkSlider.value = 20; walkVal.innerText = "20 mins";
           carbSlider.value = 35; carbVal.innerText = "35 g";
-        },
-        duration: 13
+        }
       },
       {
-        step: 6,
-        title: "Simulated Intervention Outcome: Spike Mitigated",
-        subtitle: "Predicted Glucose Drops by -38 mg/dL into Safe Range (180 mg/dL)",
-        text: "We click Run In-Silico Simulation. Notice the dashed orange curve rendering instantaneously on the chart! The simulated 2-hour glucose plummets from 218 mg/dL down to 180 mg/dL—successfully bringing the patient within target physiological boundaries (70-180 mg/dL).",
+        step: 10,
+        title: "Counterfactual Outcome: -38 mg/dL Spike Mitigation",
+        subtitle: "Glucose Drops by -38 mg/dL into Safe Target Range (180 mg/dL)",
+        text: "Immediately, the simulation engine calculates the physiological outcome. Notice the dashed orange counterfactual curve rendering instantaneously on the main chart! By modeling exercise-induced muscular GLUT-4 translocation and blunted intestinal carbohydrate absorption, the simulated 2-hour glucose level drops from 218 milligrams per deciliter down to 180 milligrams per deciliter: an acute reduction of minus 38 milligrams per deciliter! The clinical recommendation updates in real time, confirming that this simple non-pharmacological lifestyle intervention successfully mitigated the impending spike and kept the patient safely within the target range of 70 to 180 milligrams per deciliter.",
         target: "simOutcomeBox",
         action: () => {
           document.getElementById('runSimBtn').click();
           setTimeout(() => {
             document.getElementById('simOutcomeBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }, 300);
-        },
-        duration: 14
+          }, 350);
+        }
       },
       {
-        step: 7,
-        title: "Critical Scenario: Nocturnal Hypoglycemia Alert",
-        subtitle: "Patient IND-PT-10004: Nighttime Crash Flagged via Autonomic Telemetry",
-        text: "Now switching to Patient IND-PT-10004. At 02:30 AM, current glucose is 92 mg/dL. But look at the wearable telemetry: HRV RMSSD has collapsed to 14ms (sympathetic counter-regulatory surge). The Digital Twin triggers a CRITICAL RED ALERT: impending nocturnal hypo to 61 mg/dL at 04:30 AM!",
+        step: 11,
+        title: "Critical Emergency Scenario: Nocturnal Hypoglycemia Alert",
+        subtitle: "Patient IND-PT-10004 • Autonomic Sympathetic Surge at 02:30 AM",
+        text: "Now let us demonstrate the twin's life-saving capability in an emergency triage scenario. We switch the patient selector to Patient IND-PT-10004, a 59-year-old female receiving 22 units of evening Basal Insulin and Sulfonylurea therapy. The time is 02:30 AM. Current interstitial glucose is 92 milligrams per deciliter: a value that conventional threshold monitors would dismiss as normal. However, examining our secondary wearable telemetry chart, her Heart Rate Variability RMSSD has collapsed to 14 milliseconds, reflecting an intense sympathetic counter-regulatory surge. The Digital Twin cross-couples these signals and triggers an immediate Critical Red Alert: predicting a dangerous nocturnal hypoglycemic crash to 61 milligrams per deciliter at 04:30 AM.",
         target: "riskBadge",
         action: () => {
           document.getElementById('patientSelect').value = 'IND-PT-10004';
@@ -1156,41 +1180,44 @@
           setTimeout(() => {
             document.getElementById('riskBadge').scrollIntoView({ behavior: 'smooth', block: 'center' });
           }, 200);
-        },
-        duration: 14
+        }
       },
       {
-        step: 8,
-        title: "Clinical Metrics & Rigorous Validation",
-        subtitle: "MARD: 7.15% (Gold Standard < 10%) | RMSE: 14.50 mg/dL",
-        text: "Evaluated on unseen patient holdouts across 59,940 continuous telemetry points: GlycoTwin-AI achieves a clinical-grade MARD of 7.15% and RMSE of 14.50 mg/dL, with 65.31% precision on adverse spikes and a 120-minute lead time.",
-        target: "cgmChart",
+        step: 12,
+        title: "Autonomic Nervous System Telemetry & Sympathetic Surge",
+        subtitle: "Cross-Coupling HRV RMSSD and Interstitial Velocity to Prevent Fatal Comas",
+        text: "Why is the wearable autonomic stream so vital for preventing nocturnal hypoglycemic deaths? During sleep, patients cannot perceive neuroglycopenic symptoms like shakiness, sweating, or hunger. When blood glucose falls below physiological thresholds during the night, the sympathetic nervous system triggers an emergency counter-regulatory catecholamine surge to stimulate hepatic gluconeogenesis. This autonomic reaction manifests as an elevated resting heart rate combined with a dramatic suppression of parasympathetic Heart Rate Variability RMSSD. By tracking this autonomic shift alongside Continuous Glucose Monitoring velocity, GlycoTwin-AI detects impending nocturnal hypoglycemia hours before cognitive impairment or seizure onset, alerting family members or hospital night staff in time to administer bedside oral glucose.",
+        target: "wearablesChart",
+        action: () => { document.getElementById('wearablesChart').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      },
+      {
+        step: 13,
+        title: "Clinical Onboarding via ABHA / ABDM Health Gateway",
+        subtitle: "Ayushman Bharat Digital Mission Integration & IoT Sensor Pairing",
+        text: "How does a clinician onboard a new patient in real clinical practice? In the Virtual Patient Selector, we click Enroll New Patient. This launches our Ayushman Bharat Digital Mission onboarding gateway. The physician enters the patient's 14-digit ABHA Health ID, which securely queries the national ABDM health information exchange via standardized FHIR APIs. The gateway automatically imports the patient's clinical baseline: demographics, Asian Indian BMI, baseline HbA1c, and prescription medications. Simultaneously, the clinician pairs the patient's Continuous Glucose Monitor and smartwatch wearable stream. The Digital Twin engine immediately calibrates to the patient's metabolic kinetics, assigns a virtual twin ID, and begins real-time continuous forecasting.",
+        target: "openEnrollModalBtn",
         action: () => {
-          document.getElementById('cgmChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        },
-        duration: 13
+          document.getElementById('openEnrollModalBtn').click();
+          setTimeout(() => {
+            document.getElementById('closeEnrollModalBtn').click();
+          }, 4000);
+        }
       },
       {
-        step: 9,
-        title: "DPDP Act 2023 Compliance & Data Governance",
-        subtitle: "100% Synthetic Patient Data • Zero PII • Audit Trail",
-        text: "The system strictly complies with the Indian DPDP Act 2023 and HIPAA sandbox rules. Zero real patient PII is stored. Generative pipelines mimic authentic ICMR-INDIAB epidemiology with complete patient-level train/test separation.",
+        step: 14,
+        title: "Explainable AI & RSSDI Clinical Decision Support",
+        subtitle: "Transparent Physiological Feature Attribution & Guideline Alignment",
+        text: "A critical barrier to artificial intelligence adoption in medicine is the black-box dilemma: clinicians cannot act on predictions they do not understand. GlycoTwin-AI integrates Explainable AI directly into the clinical interface. Beneath the alert badge, our Clinical Decision Support box displays clear physiological explanations: quantifying the contribution of recent carbohydrate absorption, insulin sensitivity impairment from elevated baseline HbA1c, and autonomic tone shifts. These recommendations align with clinical treatment guidelines published by the Research Society for the Study of Diabetes in India and the American Diabetes Association, providing clinicians with interpretable, evidence-based guidance rather than opaque algorithmic outputs.",
+        target: "explanationBox",
+        action: () => { document.getElementById('explanationBox').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      },
+      {
+        step: 15,
+        title: "Socioeconomic Impact in India & Summit Vision",
+        subtitle: "Happiest Health Summit 2026 • Reimagining Indian Healthcare from Reactive to Proactive",
+        text: "In conclusion, the socioeconomic impact of GlycoTwin-AI for Indian healthcare is transformative. An acute diabetic emergency hospitalization costs an Indian family between 40 thousand and 1.5 lakh rupees in catastrophic out-of-pocket expenses. By preventing acute glycemic crises and sustaining patient glucose within the 70 to 180 milligrams per deciliter target range, GlycoTwin-AI reduces long-term HbA1c by an estimated 0.8 to 1.2 percent. As proven by the landmark UKPDS clinical trial, every 1 percent reduction in HbA1c slashes microvascular diabetic kidney disease, retinopathy, and nerve damage by 37 percent. Our complete source code, synthetic datasets, architecture diagrams, and slide deck are open-source on GitHub under the MIT license. We look forward to presenting GlycoTwin-AI live in Bengaluru at the Happiest Health Reimagining and Reforming Healthcare in India Summit 2026. Thank you.",
         target: "header",
-        action: () => {
-          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        },
-        duration: 12
-      },
-      {
-        step: 10,
-        title: "The Vision: Proactive Digital Healthcare in India",
-        subtitle: "Happiest Health Summit 2026 • Reimagining and Reforming Care",
-        text: "GlycoTwin-AI transforms diabetes care from reactive crisis management to proactive in-silico prevention, saving families ₹40,000 to ₹1,50,000 in emergency hospitalizations and reducing microvascular complications by 37%. Our complete codebase and presentation are open-source on GitHub. Thank you.",
-        target: "header",
-        action: () => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        },
-        duration: 14
+        action: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); }
       }
     ];
 
@@ -1469,7 +1496,7 @@
       if (nextBtn) nextBtn.classList.remove('ring-2', 'ring-sky-400', 'ring-offset-2', 'ring-offset-slate-900');
 
       // Update UI elements
-      document.getElementById('tourStepBadge').innerText = `Step ${cur.step} of ${tourSteps.length}`;
+      document.getElementById('tourStepBadge').innerText = `Step ${cur.step} of ${tourSteps.length} • (~18 Min Full Walkthrough)`;
       document.getElementById('tourTitle').innerText = cur.title;
       document.getElementById('tourSubtitle').innerText = cur.subtitle;
       document.getElementById('tourText').innerText = cur.text;
