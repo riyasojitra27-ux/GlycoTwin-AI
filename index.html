@@ -1222,8 +1222,11 @@
             <span class="text-slate-300 text-[11px]"><i class="fa-solid fa-volume-high text-sky-400 mr-1"></i>AI Voice</span>
           </label>
 
-          <!-- Timer Badge -->
-          <span class="bg-indigo-950/80 text-indigo-300 px-2 py-1 rounded border border-indigo-500/30 font-mono text-[11px]" id="tourTimerDisplay">12s</span>
+          <!-- Voice Status Indicator (No countdown timer) -->
+          <span id="tourVoiceStatusBadge" class="bg-indigo-950/80 text-indigo-300 px-3 py-1 rounded-lg border border-indigo-500/30 text-[11px] font-medium flex items-center space-x-1.5">
+            <span id="tourVoiceDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="tourVoiceStatus">AI Voice Ready</span>
+          </span>
 
           <!-- Close -->
           <button id="tourCloseBtn" class="text-slate-400 hover:text-white p-1 text-base">
@@ -1249,8 +1252,11 @@
           <button id="tourPlayPauseBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
             <i class="fa-solid fa-pause mr-1"></i> Pause
           </button>
-          <button id="tourNextBtn" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-semibold text-white transition">
-            Next <i class="fa-solid fa-arrow-right ml-1"></i>
+          <button id="tourReplayBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            <i class="fa-solid fa-rotate-left mr-1"></i> Replay
+          </button>
+          <button id="tourNextBtn" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 font-semibold text-white shadow-md shadow-indigo-500/30 transition flex items-center space-x-1.5">
+            <span>Next</span> <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
 
@@ -1261,16 +1267,42 @@
     `;
     document.body.appendChild(tourBox);
 
-    // ── Ultra-Reliable Multimodal Speech & Tour Engine ──
+    // ── Ultra-Reliable Multimodal Speech Engine ──
     let speechKeepAlive = null;
     let preferredVoice = null;
     let activeTourToken = 0;
     let isSpeakingCurrently = false;
 
+    function updateVoiceStatus(statusText, isPulse = false) {
+      const el = document.getElementById('tourVoiceStatus');
+      const dot = document.getElementById('tourVoiceDot');
+      if (el) el.innerText = statusText;
+      if (dot) {
+        dot.className = isPulse
+          ? 'w-2 h-2 rounded-full bg-sky-400 animate-pulse'
+          : 'w-2 h-2 rounded-full bg-emerald-400';
+      }
+    }
+
     // Expand medical terminology and format punctuation for natural, human cadence
     function prepareSpeechText(raw) {
       let t = raw;
+      t = t.replace(/>=/g, ' greater than or equal to ');
+      t = t.replace(/<=/g, ' less than or equal to ');
+      t = t.replace(/>/g, ' greater than ');
+      t = t.replace(/</g, ' less than ');
+      t = t.replace(/&/g, ' and ');
       t = t.replace(/(\d+)\.(\d+)/g, '$1 point $2');
+      t = t.replace(/(\d+)%/g, '$1 percent');
+      t = t.replace(/(\d+)\s*-\s*(\d+)\s*mg\/dL/gi, '$1 to $2 milligrams per deciliter');
+      t = t.replace(/-(\d+)\s*mg\/dL/gi, 'minus $1 milligrams per deciliter');
+      t = t.replace(/\+?(\d+\.?\d*)\s*mg\/dL\/min/gi, 'plus $1 milligrams per deciliter per minute');
+      t = t.replace(/\+?(\d+)\s*mg\/dL/gi, '$1 milligrams per deciliter');
+      t = t.replace(/\+(\d+)/g, 'plus $1');
+      t = t.replace(/(\d+)g\b/g, '$1 grams');
+      t = t.replace(/(\d+)ms\b/g, '$1 milliseconds');
+      t = t.replace(/(\d+)U\b/g, '$1 units');
+      t = t.replace(/(\d{1,2}):(\d{2})\s*(AM|PM)/gi, '$1 $2 $3');
       t = t.replace(/Patient\s+IND-PT-(\d+)/gi, 'Patient $1');
       t = t.replace(/IND-PT-(\d+)/gi, 'Patient $1');
       t = t.replace(/HbA1c/gi, 'H-B-A-1-C');
@@ -1288,14 +1320,15 @@
       t = t.replace(/MARD/gi, 'M-A-R-D');
       t = t.replace(/RMSE/gi, 'R-M-S-E');
       t = t.replace(/GLUT-4/gi, 'Glut 4');
-      t = t.replace(/₹40,000/g, '40 thousand rupees');
-      t = t.replace(/₹1,50,000/g, '1.5 lakh rupees');
-      t = t.replace(/\+/g, 'plus ');
+      t = t.replace(/₹40,000\s*to\s*₹1,50,000/g, 'forty thousand to 1.5 lakh rupees');
+      t = t.replace(/₹(\d+),?(\d+)?/g, '$1 thousand rupees');
+      t = t.replace(/[()\[\]]/g, ', ');
       t = t.replace(/—/g, ', ');
       t = t.replace(/–/g, ', ');
       t = t.replace(/•/g, ', ');
       t = t.replace(/:/g, ', ');
       t = t.replace(/\.\.\./g, '. ');
+      t = t.replace(/\s+/g, ' ').trim();
       return t;
     }
 
@@ -1351,15 +1384,15 @@
       }
     }
 
-    // Speak array of sentences sequentially with visual feedback and strict completion callback
+    // Speak array of sentences sequentially until the very end
     function speakTourStep(stepText, token, onAllSentencesDone) {
       if (!speechEnabled || !('speechSynthesis' in window)) {
         isSpeakingCurrently = false;
+        updateVoiceStatus('Manual Mode', false);
         if (onAllSentencesDone) onAllSentencesDone();
         return;
       }
 
-      // Stop any existing speech cleanly
       window.speechSynthesis.cancel();
       stopKeepAlive();
 
@@ -1367,9 +1400,9 @@
       const sentences = splitSentences(prepared);
       let idx = 0;
       isSpeakingCurrently = true;
+      updateVoiceStatus(`Reading (1/${sentences.length})...`, true);
 
       function speakSentence() {
-        // Guard against race conditions (user navigated to another step)
         if (token !== activeTourToken) {
           isSpeakingCurrently = false;
           stopKeepAlive();
@@ -1379,19 +1412,17 @@
         if (idx >= sentences.length) {
           isSpeakingCurrently = false;
           stopKeepAlive();
-          document.getElementById('tourTimerDisplay').innerText = '✅ Step finished';
+          updateVoiceStatus('Finished • Click Next ➔', false);
           if (onAllSentencesDone) onAllSentencesDone();
           return;
         }
 
         const sentence = sentences[idx];
         idx++;
-
-        // Update UI timer badge with current speech progress
-        document.getElementById('tourTimerDisplay').innerText = `🔊 Sentence ${idx}/${sentences.length}`;
+        updateVoiceStatus(`Reading (${idx}/${sentences.length})...`, true);
 
         const utt = new SpeechSynthesisUtterance(sentence);
-        utt.rate = 0.90;   // Clean, steady professional pitch
+        utt.rate = 0.88;   // Smooth natural tempo
         utt.pitch = 1.0;
         utt.volume = 1.0;
 
@@ -1400,25 +1431,22 @@
 
         utt.onend = () => {
           if (token !== activeTourToken) return;
-          // 400ms natural breathing pause between sentences
-          setTimeout(speakSentence, 400);
+          // Natural 350ms pause between sentences
+          setTimeout(speakSentence, 350);
         };
 
         utt.onerror = (e) => {
           if (token !== activeTourToken) return;
-          console.warn('Speech sentence error:', e);
-          if (e.error === 'interrupted' || e.error === 'canceled') {
-            return;
-          }
-          setTimeout(speakSentence, 300);
+          console.warn('Speech error:', e);
+          if (e.error === 'interrupted' || e.error === 'canceled') return;
+          setTimeout(speakSentence, 250);
         };
 
         window.speechSynthesis.speak(utt);
       }
 
       startKeepAlive();
-      // Slight 100ms delay to allow browser cancel() to flush
-      setTimeout(speakSentence, 100);
+      setTimeout(speakSentence, 120);
     }
 
     function renderTourStep(idx) {
@@ -1427,16 +1455,18 @@
         return;
       }
 
-      // Increment token to cancel any running timers/utterances from previous steps
       activeTourToken = Date.now();
       const thisToken = activeTourToken;
 
-      clearInterval(tourTimer);
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       stopKeepAlive();
 
       currentTourIdx = idx;
       const cur = tourSteps[idx];
+
+      // Remove ring highlight on Next button
+      const nextBtn = document.getElementById('tourNextBtn');
+      if (nextBtn) nextBtn.classList.remove('ring-2', 'ring-sky-400', 'ring-offset-2', 'ring-offset-slate-900');
 
       // Update UI elements
       document.getElementById('tourStepBadge').innerText = `Step ${cur.step} of ${tourSteps.length}`;
@@ -1451,52 +1481,14 @@
       const fullStepSpeech = `${cur.title}. ${cur.text}`;
 
       if (speechEnabled) {
-        document.getElementById('tourTimerDisplay').innerText = '🔊 Preparing voice...';
-        
-        // Speak every sentence completely; ONLY trigger countdown when speech finishes!
+        updateVoiceStatus('Starting voice...', true);
         speakTourStep(fullStepSpeech, thisToken, () => {
           if (thisToken !== activeTourToken) return;
-
-          // 3-second gentle buffer after all sentences finish before advancing
-          tourSecondsLeft = 3;
-          document.getElementById('tourTimerDisplay').innerText = `Next in ${tourSecondsLeft}s`;
-          
-          tourTimer = setInterval(() => {
-            if (thisToken !== activeTourToken) {
-              clearInterval(tourTimer);
-              return;
-            }
-            if (!isTourPaused) {
-              tourSecondsLeft--;
-              if (tourSecondsLeft > 0) {
-                document.getElementById('tourTimerDisplay').innerText = `Next in ${tourSecondsLeft}s`;
-              } else {
-                clearInterval(tourTimer);
-                document.getElementById('tourTimerDisplay').innerText = 'Loading...';
-                renderTourStep(currentTourIdx + 1);
-              }
-            }
-          }, 1000);
+          updateVoiceStatus('Finished • Click Next ➔', false);
+          if (nextBtn) nextBtn.classList.add('ring-2', 'ring-sky-400', 'ring-offset-2', 'ring-offset-slate-900');
         });
-
       } else {
-        // Fallback for when AI voice toggle is unchecked
-        tourSecondsLeft = cur.duration || 14;
-        document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
-        tourTimer = setInterval(() => {
-          if (thisToken !== activeTourToken) {
-            clearInterval(tourTimer);
-            return;
-          }
-          if (!isTourPaused) {
-            tourSecondsLeft--;
-            document.getElementById('tourTimerDisplay').innerText = `${tourSecondsLeft}s`;
-            if (tourSecondsLeft <= 0) {
-              clearInterval(tourTimer);
-              renderTourStep(currentTourIdx + 1);
-            }
-          }
-        }, 1000);
+        updateVoiceStatus('Manual Navigation', false);
       }
     }
 
@@ -1509,7 +1501,6 @@
 
     function endTour() {
       activeTourToken = Date.now();
-      clearInterval(tourTimer);
       stopKeepAlive();
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       tourBox.classList.add('hidden');
@@ -1533,6 +1524,13 @@
       renderTourStep(Math.max(0, currentTourIdx - 1));
     });
 
+    document.getElementById('tourReplayBtn').addEventListener('click', () => {
+      activeTourToken = Date.now();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      stopKeepAlive();
+      renderTourStep(currentTourIdx);
+    });
+
     document.getElementById('tourPlayPauseBtn').addEventListener('click', () => {
       isTourPaused = !isTourPaused;
       const btn = document.getElementById('tourPlayPauseBtn');
@@ -1540,20 +1538,22 @@
         btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Resume`;
         if ('speechSynthesis' in window) window.speechSynthesis.pause();
         stopKeepAlive();
+        updateVoiceStatus('Paused', false);
       } else {
         btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause`;
         if ('speechSynthesis' in window) window.speechSynthesis.resume();
         startKeepAlive();
+        updateVoiceStatus('Resumed', true);
       }
     });
 
     document.getElementById('tourVoiceToggle').addEventListener('change', (e) => {
       speechEnabled = e.target.checked;
+      activeTourToken = Date.now();
       if (!speechEnabled) {
-        activeTourToken = Date.now();
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         stopKeepAlive();
-        renderTourStep(currentTourIdx);
+        updateVoiceStatus('AI Voice Off', false);
       } else {
         renderTourStep(currentTourIdx);
       }
