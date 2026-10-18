@@ -14,49 +14,47 @@
 ---
 
 ## Table of Contents
-1. [Team Details & Academic Incubator](#team-details--academic-incubator)
+1. [Team Details & College / Incubator Information](#team-details--college--incubator-information)
 2. [Project Title & Executive Summary](#project-title--executive-summary)
-3. [Healthcare Use Case & Clinical Problem in India](#healthcare-use-case--clinical-problem-in-india)
-4. [Dual Data Streams & Physiological Dynamics](#dual-data-streams--physiological-dynamics)
-5. [Data Governance & DPDP Act 2023 Compliance](#data-governance--dpdp-act-2023-compliance)
-6. [Machine Learning Architecture & Multimodal Fusion](#machine-learning-architecture--multimodal-fusion)
-7. [Model Performance & Clinical Benchmarking](#model-performance--clinical-benchmarking)
-8. [Physician "What-If" Counterfactual Simulation Engine](#physician-what-if-counterfactual-simulation-engine)
-9. [Clinician Digital Twin UI Cockpit](#clinician-digital-twin-ui-cockpit)
-10. [Submission Deliverables & Artifact Links](#submission-deliverables--artifact-links)
-11. [Quickstart: Installation & Running the Prototype](#quickstart-installation--running-the-prototype)
-12. [Repository File Structure](#repository-file-structure)
+3. [Problem Statement](#problem-statement)
+4. [Healthcare Use Case](#healthcare-use-case)
+5. [Technical Stack](#technical-stack)
+6. [AI / ML Model & Framework Details](#ai--ml-model--framework-details)
+7. [Dual Data Streams & Physiological Dynamics](#dual-data-streams--physiological-dynamics)
+8. [Data Governance & DPDP Act 2023 Compliance](#data-governance--dpdp-act-2023-compliance)
+9. [Model Performance & Clinical Benchmarking](#model-performance--clinical-benchmarking)
+10. [Physician "What-If" Counterfactual Simulation Engine](#physician-what-if-counterfactual-simulation-engine)
+11. [Clinician Digital Twin UI Cockpit & Live Demo](#clinician-digital-twin-ui-cockpit--live-demo)
+12. [Submission Deliverables & Artifact Links (PDF/PPT/Video)](#submission-deliverables--artifact-links)
 13. [Open Source License](#open-source-license)
 
 ---
 
-## Team Details
+## Team Details & College / Incubator Information
 
 - **Project Title:** GlycoTwin-AI
 - **Team Name:** LynxieCreations
 - **Team Members:**
   1. **Riya Sojitra**
   2. **Tanishqua Trivedi**
-- **Institution:** V.V.P. Engineering College, Rajkot, Gujarat, India
-- **Incubator:** Not applicable / Not specified
-- **Project Category:** Artificial Intelligence in Healthcare
-- **Project Focus:** AI-assisted diabetes management, glucose prediction, and personalized health insights.
+- **College / Institution:** V.V.P. Engineering College, Rajkot, Gujarat, India
+- **Incubator Information:** Not applicable / Independent Student Innovation
+- **Public GitHub Repository Link:** [https://github.com/riyasojitra27-ux/GlycoTwin-AI](https://github.com/riyasojitra27-ux/GlycoTwin-AI)
+- **Live Interactive Deployment (GitHub Pages):** [https://riyasojitra27-ux.github.io/GlycoTwin-AI/](https://riyasojitra27-ux.github.io/GlycoTwin-AI/)
 
 ### Team Contribution
 
-Our two-member team is developing GlycoTwin-AI, an AI-powered healthcare prototype designed to explore personalized glucose forecasting and diabetes-management support. Our work focuses on combining health-related data, machine-learning techniques, and an accessible interface to help users understand potential glucose trends and explore lifestyle scenarios.
-
-GlycoTwin-AI is a research prototype and is not intended to replace professional medical advice or clinical decisions.
+Our two-member team developed GlycoTwin-AI from the ground up: designing the physiological kinetics, engineering the synthetic EHR and wearable data pipelines, training the dual-head gradient boosted ML models, building the live clinician dashboard with in-silico What-If simulation, and embedding the 15-20 minute AI Guided Presentation tour.
 
 ---
 
 ## Project Title & Executive Summary
 
-**Title:** **GlycoTwin-AI: Multimodal Digital Twin for Proactive Glycemic Management & Adverse Event Prediction in Indian Diabetic Patients**
+**Project Title:** **GlycoTwin-AI: Multimodal Digital Twin for Proactive Glycemic Management & Adverse Event Prediction in Indian Diabetic Patients**
 
 **Executive Summary:**  
-Traditional diabetes care in India is **reactive**—relying on periodic capillary fingersticks and quarterly HbA1c tests that mask intraday glycemic volatility and lethal nocturnal hypoglycemia. **GlycoTwin-AI** is a physiologically grounded, personalized **Digital Twin** that dynamically fuses:
-1. **Static / Historical Electronic Health Records (EHR)**: Demographics, Asian Indian Phenotype metrics, baseline HbA1c, renal function, lipid panels, and pharmacotherapy.
+Traditional diabetes care in India is **reactive**—relying on periodic capillary fingersticks and quarterly HbA1c tests that mask intraday glycemic volatility and lethal nocturnal hypoglycemia. **GlycoTwin-AI** is a physiologically grounded, personalized **Healthcare Digital Twin** that dynamically fuses:
+1. **Static / Historical Electronic Health Records (EHR)**: Demographics, Asian Indian Phenotype metrics (visceral adiposity at BMI $\ge 23$), baseline HbA1c, renal function, lipid panels, and pharmacotherapy.
 2. **Dynamic / Real-Time Wearable & IoT Sensor Streams**: Continuous Glucose Monitoring (CGM, 5-minute sampling), continuous photoplethysmography (PPG) Heart Rate, Heart Rate Variability (HRV - RMSSD autonomic tone), step cadence, and Indian meal carbohydrate logs.
 
 **Key Outcomes:**
@@ -66,7 +64,39 @@ Traditional diabetes care in India is **reactive**—relying on periodic capilla
 
 ---
 
-## Healthcare Use Case & Clinical Problem in India
+## Problem Statement
+
+### The Indian Diabetes Paradox & Failure of Reactive Care
+1. **National Epidemic:** As documented by the landmark **ICMR-INDIAB (2023) Study**, India is home to **101.3 million diagnosed diabetics** and **136 million pre-diabetic individuals**, making India the *"Diabetes Capital of the World"*.
+2. **The Asian Indian Phenotype:** Indians develop Type 2 Diabetes at younger ages and at lower BMI thresholds ($\ge 23\text{ kg/m}^2$ vs $\ge 25\text{ kg/m}^2$ internationally). They exhibit higher visceral adiposity, hyperinsulinemia, and severe insulin resistance.
+3. **Dietary Glycemic Volatility:** Indian staple diets are heavily carbohydrate-dense (polished white rice in South/East India; refined wheat rotis in North/West India), triggering steep postprandial glycemic surges exceeding $220\text{ mg/dL}$.
+4. **The Silent Nocturnal Crash:** Sulfonylurea and basal insulin therapy combined with erratic meal timing leads to acute nocturnal hypoglycemia ($<70\text{ mg/dL}$) between 01:00 AM and 04:30 AM, causing autonomic collapse and sudden nocturnal deaths.
+5. **The Fatal Flaw of Quarterly HbA1c:** Quarterly HbA1c provides a trailing 3-month average. A patient with extreme peaks ($280\text{ mg/dL}$) and severe valleys ($50\text{ mg/dL}$) may show a misleadingly "normal" HbA1c of 7.2%, masking dangerous glycemic variability.
+
+---
+
+## Healthcare Use Case
+
+1. **Continuous 2-Hour Predictive Early Warning:** Alerting patients and caregivers to impending hypoglycemia ($<70\text{ mg/dL}$) or severe hyperglycemia ($>200\text{ mg/dL}$) two hours before symptoms occur.
+2. **In-Silico Counterfactual "What-If" Simulation:** Enabling physicians to test non-pharmacological interventions (e.g., 20-min post-meal brisk walking, 35g foxtail millet carb swap) and medication titrations in a virtual twin before patient execution.
+3. **Nocturnal Hypoglycemia Rescue via Autonomic Telemetry:** Cross-coupling HRV RMSSD collapse (sympathetic surge) with interstitial glucose velocity to detect nighttime crashes during sleep.
+4. **Primary Health Center (PHC) Democratization:** Integrating with the Ayushman Bharat Digital Mission (ABDM) and ABHA Health IDs to scale specialist-grade endocrinology care across tier-2/3 cities and rural clinics.
+
+---
+
+## Technical Stack
+
+- **Machine Learning & AI:** Python 3.9+, Scikit-Learn (`HistGradientBoostingRegressor`, `HistGradientBoostingClassifier`), NumPy, Pandas
+- **Physiological Modeling:** Bergman Minimal Model differential kinetics, non-insulin mediated GLUT-4 muscular glucose clearance, Autonomic Stress Index ($HR / HRV_{RMSSD}$)
+- **Backend & APIs:** FastAPI, Uvicorn, Pydantic, RESTful JSON endpoints
+- **Frontend & Clinician Cockpit:** HTML5, Tailwind CSS, Chart.js (Dual Synchronized CGM & Wearable Telemetry Charts), FontAwesome
+- **AI Speech & Video Teleprompter Engine:** Web Speech API, sentence-by-sentence queue, Chrome keepalive audio synthesis
+- **Testing & Quality Assurance:** Python `unittest` integration test suite (`tests/test_pipeline.py`, `tests/test_full_system.py`)
+- **Data Standards & Privacy:** Synthea & MIMIC-IV clinical schemas, India DPDP Act 2023 & HIPAA compliance, FHIR ABDM metadata format
+
+---
+
+## AI / ML Model & Framework Details
 
 ### The Indian Diabetes Paradox
 - **Epidemiology (ICMR-INDIAB 2023 Study):** India has **101.3 million diagnosed diabetics** and **136 million individuals with pre-diabetes**, making it the *"Diabetes Capital of the World"*.
@@ -187,12 +217,14 @@ In accordance with Phase 1 guidelines, all required summit assets are compiled i
 | :--- | :--- | :--- |
 | **Complete Source Code** | Python, FastAPI, JS, HTML | [`web_app/`](web_app/), [`models/`](models/), [`data/`](data/) |
 | **Architecture Diagram (PDF)** | Vector PDF | [presentation/ARCHITECTURE_DIAGRAM.pdf](presentation/ARCHITECTURE_DIAGRAM.pdf) |
+| **Architecture Diagram (PPT/PPTX)** | Editable PowerPoint | [presentation/ARCHITECTURE_DIAGRAM.pptx](presentation/ARCHITECTURE_DIAGRAM.pptx) |
 | **Architecture Diagram (SVG)** | High-Res Vector SVG | [presentation/ARCHITECTURE_DIAGRAM.svg](presentation/ARCHITECTURE_DIAGRAM.svg) |
 | **Summit Presentation (PDF)** | 16:9 Presentation Slides PDF | [presentation/GLYCOTWIN_PRESENTATION.pdf](presentation/GLYCOTWIN_PRESENTATION.pdf) |
+| **Summit Presentation (PPT/PPTX)** | Editable PowerPoint Slides | [presentation/GLYCOTWIN_PRESENTATION.pptx](presentation/GLYCOTWIN_PRESENTATION.pptx) |
 | **Summit Presentation (Markdown)** | 20 Comprehensive Slides | [presentation/GLYCOTWIN_PRESENTATION.md](presentation/GLYCOTWIN_PRESENTATION.md) |
-| **20-Minute Video Script & Guide**| Timestamped Script & Q&A | [presentation/VIDEO_DEMO_SCRIPT.md](presentation/VIDEO_DEMO_SCRIPT.md) |
-| **20-Minute Video Demo Link** | Unlisted YouTube / PPT Video | **[Watch 20-Min Demo Video](https://youtu.be/unlisted-glycotwin-poc-demo)** *(Placeholder link; full script in `presentation/VIDEO_DEMO_SCRIPT.md`)* |
-| **Open-Source License** | MIT License | [LICENSE](LICENSE) |
+| **15-20 Min Video Demo Script** | Full Timestamped Teleprompter | [presentation/VIDEO_DEMO_SCRIPT.md](presentation/VIDEO_DEMO_SCRIPT.md) |
+| **15-20 Min Video Demo Link** | Unlisted YouTube Video | **[Watch 15-20 Min Unlisted YouTube Demo](https://youtu.be/unlisted-glycotwin-poc-demo)** *(Replace with your unlisted YouTube link)* |
+| **Open-Source License** | MIT Open-Source License | [LICENSE](LICENSE) |
 
 ---
 
@@ -202,8 +234,8 @@ Follow these simple steps to run the complete data generation, model training, t
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/GlycoTwin_India.git
-cd GlycoTwin_India
+git clone https://github.com/riyasojitra27-ux/GlycoTwin-AI.git
+cd GlycoTwin-AI
 ```
 
 ### 2. Set Up Virtual Environment & Dependencies
