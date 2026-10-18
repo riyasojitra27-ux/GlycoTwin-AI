@@ -5,11 +5,13 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-1.0.0-emerald.svg)](https://fastapi.tiangolo.com)
 [![DPDP Act 2023 Compliant](https://img.shields.io/badge/Compliance-DPDP_Act_2023_&_HIPAA-brightgreen.svg)](#data-governance--dpdp-act-2023-compliance)
 [![Clinical MARD](https://img.shields.io/badge/Clinical_MARD-7.15%25_(Benchmark_<10%25)-purple.svg)](#model-performance--clinical-benchmarking)
+[![Demo Video](https://img.shields.io/badge/YouTube_Demo-Watch_15--20_Min_Video-red?logo=youtube)](https://youtu.be/dfJGvcVeKDI)
 
 > **Happiest Health Reimagining and Reforming Healthcare in India Summit – 2026, Bengaluru**  
 > **Challenge:** Proof-of-Concept (PoC) Healthcare Digital Twin Model  
 > **Target Condition:** Type 2 Diabetes Mellitus & Postprandial / Nocturnal Dysglycemia (Asian Indian Cohort)  
-> **Submission Format:** Public GitHub Repository (`Team GlycoTwin_College Name`)
+> **Submission Format:** Public GitHub Repository (`Team GlycoTwin_College Name`)  
+> **15-20 Min Unlisted Video Demo:** [https://youtu.be/dfJGvcVeKDI](https://youtu.be/dfJGvcVeKDI)
 
 ---
 
@@ -39,6 +41,7 @@
   2. **Tanishqua Trivedi**
 - **College / Institution:** V.V.P. Engineering College, Rajkot, Gujarat, India
 - **Incubator Information:** Not applicable / Independent Student Innovation
+- **15-20 Min Unlisted Video Demo Link:** [https://youtu.be/dfJGvcVeKDI](https://youtu.be/dfJGvcVeKDI)
 - **Public GitHub Repository Link:** [https://github.com/riyasojitra27-ux/GlycoTwin-AI](https://github.com/riyasojitra27-ux/GlycoTwin-AI)
 - **Live Interactive Deployment (GitHub Pages):** [https://riyasojitra27-ux.github.io/GlycoTwin-AI/](https://riyasojitra27-ux.github.io/GlycoTwin-AI/)
 
@@ -223,7 +226,7 @@ In accordance with Phase 1 guidelines, all required summit assets are compiled i
 | **Summit Presentation (PPT/PPTX)** | Editable PowerPoint Slides | [presentation/GLYCOTWIN_PRESENTATION.pptx](presentation/GLYCOTWIN_PRESENTATION.pptx) |
 | **Summit Presentation (Markdown)** | 20 Comprehensive Slides | [presentation/GLYCOTWIN_PRESENTATION.md](presentation/GLYCOTWIN_PRESENTATION.md) |
 | **15-20 Min Video Demo Script** | Full Timestamped Teleprompter | [presentation/VIDEO_DEMO_SCRIPT.md](presentation/VIDEO_DEMO_SCRIPT.md) |
-| **15-20 Min Video Demo Link** | Unlisted YouTube Video | **[Watch 15-20 Min Unlisted YouTube Demo](https://youtu.be/unlisted-glycotwin-poc-demo)** *(Replace with your unlisted YouTube link)* |
+| **15-20 Min Video Demo Link** | Unlisted YouTube Video | **[Watch 15-20 Min Unlisted YouTube Demo](https://youtu.be/dfJGvcVeKDI)** |
 | **Open-Source License** | MIT Open-Source License | [LICENSE](LICENSE) |
 
 ---
